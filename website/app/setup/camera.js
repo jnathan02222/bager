@@ -53,7 +53,7 @@ export default function Camera(){
         const canvasElement = document.getElementById("output_canvas");
         const canvasCtx = canvasElement.getContext("2d");
 
-        canvasElement.style.width = video.videoWidth;;
+        canvasElement.style.width = video.videoWidth;
         canvasElement.style.height = video.videoHeight;
         canvasElement.width = video.videoWidth;
         canvasElement.height = video.videoHeight;

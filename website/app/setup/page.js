@@ -6,21 +6,16 @@ export default function SetUpPage(){
 
     //Avatar
     const [avatar, setAvatar] = useState(0)
-    const avatarUp = () => {
-        if(avatar == 8){
-            setAvatar(0)
-        } else {    
-            setAvatar(avatar+1)
-        }
-    }
-    const avatarDown = () => {
-        if(avatar == 0){
-            setAvatar(8)
-        } else {
-            setAvatar(avatar-1)
-        }
-    }
 
+    const changeAvatar = (iteration, curAvatar) => {
+        let newAvatar = curAvatar + iteration;
+        if (newAvatar > 9) {
+            newAvatar = 0;
+        } else if (newAvatar < 0) {
+            newAvatar = 9;
+        }
+        setAvatar(newAvatar);
+    }
 
     //Settings
     const names = {
@@ -39,7 +34,7 @@ export default function SetUpPage(){
         players: 1,
         time: 30,
         rounds: 1,
-        hints: 1
+        hints: 1,
     }
     const [settings, setSettings] = useState({
         players: 2,
@@ -97,8 +92,9 @@ export default function SetUpPage(){
                 <div>
                     <Camera></Camera>
                     <div className='w-full p-3 rounded-3xl flex justify-center items-center pt-10'>
-                        <img className="hover:cursor-pointer w-16 h-16 m-10" src='/left.png' onClick={avatarDown}></img>
-                        <img className="hover:cursor-pointer w-16 h-16 m-10" src='/right.png' onClick={avatarUp}></img>
+                        <img className="hover:cursor-pointer w-16 h-16 m-10" src='/left.png' onClick={(e)=>changeAvatar(-1, avatar)}></img>
+                        <img className='' src={'/avatar' + avatar + '.png'} alt={avatar}></img>
+                        <img className="hover:cursor-pointer w-16 h-16 m-10" src='/right.png' onClick={(e)=>changeAvatar(1, avatar)}></img>
                     </div>
                 </div>
                 <div className="flex flex-col h-full">
