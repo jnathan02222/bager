@@ -1,54 +1,10 @@
 "use client"
-import Link from "next/link"
 import { useState } from "react"
 
 export default function SetUpPage(){
-    const [players, setPlayers] = useState(2)
-    const [time, setTime] = useState(60)
-    const [rounds, setRounds] = useState(3)
-    const [hints, setHints] = useState(1)
-    const [avatar, setAvatar] = useState(0)
 
-    const playersIncrease = () => {
-        if(players < 8){
-            setPlayers(players+1)
-        }
-    }
-    const playersDecrease = () => {
-        if(players > 2){
-            setPlayers(players-1)
-        }
-    }
-    const timeIncrease = () => {
-        if(time < 180){
-            setTime(time+30)
-        }
-    }
-    const timeDecrease = () => {
-        if(time>30){
-            setTime(time-30)
-        }
-    }
-    const roundsIncrease = () => {
-        if(rounds < 10){
-            setRounds(rounds+1)
-        }
-    }
-    const roundsDecrease = () => {
-        if(rounds > 1){
-            setRounds(rounds-1)
-        }
-    }
-    const hintsIncrease = () => {
-        if(hints < 3){
-            setHints(hints+1)
-        }
-    }
-    const hintsDecrease = () => {
-        if(hints > 0){
-            setHints(hints-1)
-        }
-    }
+    //Avatar
+    const [avatar, setAvatar] = useState(0)
     const avatarUp = () => {
         if(avatar == 8){
             setAvatar(0)
@@ -64,59 +20,109 @@ export default function SetUpPage(){
         }
     }
 
-    return (
-        <div className='w-full min-h-screen grid grid-cols-7'>
-            <div className='col-start-1 col-span-4'>
-                <div className='w-full h-3/5 m-6 mb-5 mt-10 border-4 border-black rounded-3xl self-center bg-green-100'>
-                <h1 className='text-3xl font-bold row-start-1 col-span-3 text-center mt-5'>Camera</h1>
-                </div>
-                <div className='w-full h-1/3 p-3 ml-6 rounded-3xl bg-gray-200 grid grid-cols-3 grid-rows-3'>
-                    <h1 className='text-3xl font-bold row-start-1 col-span-3 text-center mt-5'>Avatar</h1>
-                    <button className='bg-red-200 p-2 border-2 border-black' onClick={avatarDown}></button>
-                    <h1 className='players text-lg font-bold self-center text-center'>{avatar}</h1>
-                    <button className='bg-green-200 p-2 border-2 border-black' onClick={avatarUp}></button>
-                </div>
-            </div>
 
-            <div className='col-start-5 col-span-3'>
-                <div className='h-1/3 p-5 m-10 mb-5 rounded-3xl bg-gray-200 grid grid-cols-4 grid-rows-5'>
-                    <h1 className='text-3xl font-bold row-start-1 col-span-4 text-center'>Settings</h1>
-                    <h1 className='text-xl font-bold col-start-1 self-center text-center'>Players</h1>
-                    <button className='bg-red-200 p-2 border-2 border-black border-b-0' onClick={playersDecrease}></button>
-                    <h1 className='players text-lg font-bold self-center text-center'>{players}</h1>
-                    <button className='bg-green-200 p-2 border-2 border-black border-b-0' onClick={playersIncrease}></button>
-                    <h1 className='text-xl font-bold col-start-1 self-center text-center'>Time</h1>
-                    <button className='bg-red-200 p-2 border-2 border-black border-b-0' onClick={timeDecrease}></button>
-                    <h1 className='time text-lg font-bold self-center text-center'>{time}</h1>
-                    <button className='bg-green-200 p-2 border-2 border-black border-b-0' onClick={timeIncrease}></button>
-                    <h1 className='text-xl font-bold col-start-1 self-center text-center'>Rounds</h1>
-                    <button className='bg-red-200 p-2 border-2 border-black border-b-0' onClick={roundsDecrease}></button>
-                    <h1 className='rounds text-lg font-bold self-center text-center'>{rounds}</h1>
-                    <button className='bg-green-200 p-2 border-2 border-black border-b-0' onClick={roundsIncrease}></button>
-                    <h1 className='text-xl font-bold col-start-1 self-center text-center'>Hints</h1>
-                    <button className='bg-red-200 p-2 border-2 border-black ' onClick={hintsDecrease}></button>
-                    <h1 className='hints text-lg font-bold self-center text-center'>{hints}</h1>
-                    <button className='bg-green-200 p-2 border-2 border-black' onClick={hintsIncrease}></button>
+    //Settings
+    const names = {
+        players: "Player",
+        time: "Time",
+        rounds: "Rounds",
+        hints: "Hints"
+    }
+    const range = {
+        players: [2, 8],
+        time: [30, 180],
+        rounds: [1, 10],
+        hints: [0, 3]
+    }
+    const iterations = {
+        players: 1,
+        time: 30,
+        rounds: 1,
+        hints: 1
+    }
+    const [settings, setSettings] = useState({
+        players: 2,
+        time: 60,
+        rounds: 3,
+        hints: 1
+    })
+    const changeSettings = (iteration, property) => {
+        var newSettings = {
+            players: settings.players,
+            time: settings.time,
+            rounds: settings.rounds,
+            hints: settings.hints
+        }
+        console.log("Property: " + property)
+        console.log(range[property])
+        if (newSettings[property] + iteration > range[property][1] || newSettings[property] + iteration < range[property][0]) {
+            return
+        }
+        newSettings[property] += iteration
+        setSettings(newSettings)
+    }
+    const getSettingWidgets = () => {
+        var widgets = []
+        for (const property in iterations){
+            widgets.push(
+                <div>
+                    <div className="flex justify-center mt-5 items-center">
+                        <h1 className='text-xl self-center w-40'>{names[property]}</h1>
+                        <div className="flex justify-between w-40">
+                            <img className="w-5 h-5 mt-1" src='/left.png' onClick={(e)=>{changeSettings(-iterations[property], property)}}></img>
+                            <h1 className='text-lg self-center text-center'>{settings[property]}</h1>
+                            <img className="w-5 h-5 mt-1" src='/right.png' onClick={(e)=>{changeSettings(iterations[property], property)}}></img>
+                        </div>
+                    </div>
                 </div>
-                <div className='mx-10 pb-3 rounded-3xl bg-gray-200'>
-                    <h1 className='text-3xl font-bold m-5 pt-5 text-center'>Players</h1>
-                    <div className='grid grid-rows-8 grid-col-2'>
-                        <input className='p-2 border-2 mx-16 m-2 border-black rounded-md focus:outline-none col-start-1' placeholder='Player 1'></input>
-                        <img className='col-start-2 h-10 w-10' src={'/background.png'} alt='filler'></img>
-                        <input className='p-2 border-2 mx-16 m-2 border-black rounded-md focus:outline-none col-start-1' placeholder='Player 2'></input>
-                        <img className='col-start-2 h-10 w-10' src={'/background.png'} alt='filler'></img>
-                        <input className='p-2 border-2 mx-16 m-2 border-black rounded-md focus:outline-none col-start-1' placeholder='Player 3'></input>
-                        <img className='col-start-2 h-10 w-10' src={'/background.png'} alt='filler'></img>
-                        <input className='p-2 border-2 mx-16 m-2 border-black rounded-md focus:outline-none col-start-1' placeholder='Player 4'></input>
-                        <img className='col-start-2 h-10 w-10' src={'/background.png'} alt='filler'></img>
-                        <input className='p-2 border-2 mx-16 m-2 border-black rounded-md focus:outline-none col-start-1' placeholder='Player 5'></input>
-                        <img className='col-start-2 h-10 w-10' src={'/background.png'} alt='filler'></img>
-                        <input className='p-2 border-2 mx-16 m-2 border-black rounded-md focus:outline-none col-start-1' placeholder='Player 6'></input>
-                        <img className='col-start-2 h-10 w-10' src={'/background.png'} alt='filler'></img>
-                        <input className='p-2 border-2 mx-16 m-2 border-black rounded-md focus:outline-none col-start-1' placeholder='Player 7'></input>
-                        <img className='col-start-2 h-10 w-10' src={'/background.png'} alt='filler'></img>
-                        <input className='p-2 border-2 mx-16 m-2 border-black rounded-md focus:outline-none col-start-1' placeholder='Player 8'></input>
-                        <img className='col-start-2 h-10 w-10' src={'/background.png'} alt='filler'></img>
+            )
+        }
+        return widgets
+    }
+    
+    const [popup, setPopup] = useState(false)
+    
+    return (
+        <div className="relative">
+            <button className='text-3xl font-bold absolute p-5' onClick={()=>{setPopup(true)}}>?</button>
+            {popup && 
+                <div className="absolute w-full h-full bg-white z-10 flex justify-center items-center" onClick={()=>{setPopup(false)}}>
+                    <h1 className='text-center'>Click anywhere to return to setup.</h1>
+                </div>
+            }
+            <div className='w-full h-screen flex justify-center p-24'>
+                <div className='min-w-96 w-1/2'>
+                    <div className='w-full aspect-video	 border-4 border-black rounded-3xl'></div>
+                    <div className='w-full p-3 rounded-3xl flex justify-center items-center pt-10'>
+                        <img className="w-16 h-16 m-10" src='/left.png' onClick={avatarDown}></img>
+                        <img className="w-16 h-16 m-10" src='/right.png' onClick={avatarUp}></img>
+                    </div>
+                </div>
+                <div className="flex flex-col h-full">
+                    <div className='w-80 pb-5 px-5 ml-5 mb-5 rounded-3xl border-4 border-black'>
+                        <h1 className='mb-2 text-2xl pt-5'>Settings</h1>
+                        {getSettingWidgets()}
+                    </div>
+                    <div className='ml-5 pb-3 border-4 border-black rounded-3xl h-full'>
+                        <h1 className='ml-5 text-2xl py-5 '>Players</h1>
+                        <div>
+                            <div className="flex items-center pb-2">
+                                <div className="bg-black w-10 h-10  rounded-full ml-5"></div>
+                                <div className='text-xl ml-4'>Baging with Bager</div>
+                            </div>
+                            <div className="flex items-center pb-2">
+                                <div className="bg-black w-10 h-10  rounded-full ml-5"></div>
+                                <div className='text-xl ml-4'>Pedo</div>
+                            </div>
+                            <div className="flex items-center pb-2">
+                                <div className="bg-black w-10 h-10   rounded-full ml-5"></div>
+                                <div className='text-xl ml-4'>Meme Man</div>
+                            </div>
+                            <div className="flex items-center pb-2">
+                                <div className="bg-black w-10 h-10   rounded-full ml-5"></div>
+                                <div className='text-xl ml-4'>Willy Wigger</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
