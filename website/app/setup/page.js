@@ -71,9 +71,9 @@ export default function SetUpPage(){
                     <div className="flex justify-center mt-5 items-center">
                         <h1 className='text-xl self-center w-40'>{names[property]}</h1>
                         <div className="flex justify-between w-40">
-                            <img className="w-5 h-5 mt-1" src='/left.png' onClick={(e)=>{changeSettings(-iterations[property], property)}}></img>
+                            <img className="w-5 h-5 mt-1 hover:cursor-pointer" src='/left.png' onClick={(e)=>{changeSettings(-iterations[property], property)}}></img>
                             <h1 className='text-lg self-center text-center'>{settings[property]}</h1>
-                            <img className="w-5 h-5 mt-1" src='/right.png' onClick={(e)=>{changeSettings(iterations[property], property)}}></img>
+                            <img className="w-5 h-5 mt-1 hover:cursor-pointer" src='/right.png' onClick={(e)=>{changeSettings(iterations[property], property)}}></img>
                         </div>
                     </div>
                 </div>
@@ -94,11 +94,11 @@ export default function SetUpPage(){
                 </div>
             }
             <div className='w-full h-screen flex justify-center p-24'>
-                <div className='min-w-96 w-1/2'>
+                <div>
                     <Camera></Camera>
                     <div className='w-full p-3 rounded-3xl flex justify-center items-center pt-10'>
-                        <img className="w-16 h-16 m-10" src='/left.png' onClick={avatarDown}></img>
-                        <img className="w-16 h-16 m-10" src='/right.png' onClick={avatarUp}></img>
+                        <img className="hover:cursor-pointer w-16 h-16 m-10" src='/left.png' onClick={avatarDown}></img>
+                        <img className="hover:cursor-pointer w-16 h-16 m-10" src='/right.png' onClick={avatarUp}></img>
                     </div>
                 </div>
                 <div className="flex flex-col h-full">
