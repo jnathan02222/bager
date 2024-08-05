@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react"
+import Camera from "./camera"
 
 export default function SetUpPage(){
 
@@ -63,9 +64,10 @@ export default function SetUpPage(){
     }
     const getSettingWidgets = () => {
         var widgets = []
+        let index = 0
         for (const property in iterations){
             widgets.push(
-                <div>
+                <div key={index}>
                     <div className="flex justify-center mt-5 items-center">
                         <h1 className='text-xl self-center w-40'>{names[property]}</h1>
                         <div className="flex justify-between w-40">
@@ -76,6 +78,7 @@ export default function SetUpPage(){
                     </div>
                 </div>
             )
+            index++
         }
         return widgets
     }
@@ -92,7 +95,7 @@ export default function SetUpPage(){
             }
             <div className='w-full h-screen flex justify-center p-24'>
                 <div className='min-w-96 w-1/2'>
-                    <div className='w-full aspect-video	 border-4 border-black rounded-3xl'></div>
+                    <Camera></Camera>
                     <div className='w-full p-3 rounded-3xl flex justify-center items-center pt-10'>
                         <img className="w-16 h-16 m-10" src='/left.png' onClick={avatarDown}></img>
                         <img className="w-16 h-16 m-10" src='/right.png' onClick={avatarUp}></img>
