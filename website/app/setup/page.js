@@ -112,11 +112,11 @@ export default function SetUpPage(){
                 </div>
                 <div className="flex flex-col h-full">
                     <div className='w-80 pb-5 px-5 ml-5 mb-5 rounded-3xl border-4 border-black'>
-                        <h1 className='mb-2 text-2xl pt-5'>Settings</h1>
+                        <h1 className='mb-2 text-xl pt-5'>Settings</h1>
                         {getSettingWidgets()}
                     </div>
                     <div className='ml-5 pb-3 border-4 border-black rounded-3xl h-full'>
-                        <h1 className='ml-5 text-2xl py-5 '>Players</h1>
+                        <h1 className='ml-5 text-xl py-5 '>Players</h1>
                         <div>
                             <div className="flex items-center pb-2">
                                 <div className="bg-black w-10 h-10  rounded-full ml-5"></div>
