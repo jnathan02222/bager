@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import Camera from "./camera"
+import Link from "next/link"
 
 export default function SetUpPage(){
 
@@ -79,6 +80,14 @@ export default function SetUpPage(){
     }
     
     const [popup, setPopup] = useState(false)
+    const [buttonText, setButtonText] = useState('Copy invite link')
+    const copyURL = () => {
+        navigator.clipboard.writeText(window.location.href)
+        setButtonText('Copied!')
+        setTimeout(() => {
+            setButtonText('Copy to Clipboard')
+        }, 1000);
+    }
     
     return (
         <div className="relative">
@@ -89,12 +98,16 @@ export default function SetUpPage(){
                 </div>
             }
             <div className='w-full h-screen flex justify-center p-24'>
-                <div>
+                <div className='flex flex-col items-center'>
                     <Camera></Camera>
-                    <div className='w-full p-3 rounded-3xl flex justify-center items-center pt-10'>
+                    <div className='w-full rounded-3xl flex justify-center items-center'>
                         <img className="hover:cursor-pointer w-16 h-16 m-10" src='/left.png' onClick={(e)=>changeAvatar(-1, avatar)}></img>
                         <img className='' src={'/avatar' + avatar + '.png'} alt={avatar}></img>
                         <img className="hover:cursor-pointer w-16 h-16 m-10" src='/right.png' onClick={(e)=>changeAvatar(1, avatar)}></img>
+                    </div>
+                    <div className='flex'>
+                        <button className='w-48 text-center p-2 border-4 border-black rounded-lg mr-10 bg-green-200' onClick={()=>copyURL()}>{buttonText}</button>
+                        <Link className='w-48 text-center p-2 border-4 border-black rounded-lg bg-blue-200' href={'/game/'}>Start Game</Link>
                     </div>
                 </div>
                 <div className="flex flex-col h-full">
