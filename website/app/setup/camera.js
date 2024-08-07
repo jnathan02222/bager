@@ -1,6 +1,6 @@
 import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
 import { useState, useRef, useEffect } from "react";
-export default function Camera(){
+export default function Camera(props){
     const landmarkColors = {
         4 : ["white", "black"], //Thumb
         8 : ["black", "black"], //Pointer
@@ -25,10 +25,16 @@ export default function Camera(){
           runningMode: 'VIDEO',
           numHands: 2
         });
+        if(!!navigator.mediaDevices?.getUserMedia && props.startCamera){
+            enableCam();
+        }
     };
     useEffect(() => {
         createHandLandmarker();
         setWebcamSupported(!!navigator.mediaDevices?.getUserMedia);
+        return () => {
+            handLandmarker.current = null;
+        }
     }, []);
 
     //Recording
@@ -92,7 +98,7 @@ export default function Camera(){
             <video id="webcam"  autoPlay={true} playsInline={true} className="rounded-2xl -z-10 -scale-x-[1]"></video>
             <canvas id="output_canvas" className="absolute -scale-x-[1] z-10"></canvas>
             <div  className="absolute">{webcamSupported ? "" : "Webcam is not supported by your browser"}</div>
-            {!recording && <button className="absolute p-2 border-4 rounded-md z-20" onClick={enableCam}>Start Recording</button>}
+            {(!recording && !props.startCamera) && <button className="absolute p-2 border-4 rounded-md z-20" onClick={enableCam}>Start Recording</button>}
         </div>
     );
 }

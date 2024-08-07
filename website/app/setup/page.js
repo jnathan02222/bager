@@ -84,7 +84,7 @@ export default function SetUpPage(){
         <div className="relative">
             <button className='text-3xl font-bold absolute p-5' onClick={()=>{setPopup(true)}}>?</button>
             {popup && 
-                <div className="absolute w-full h-full bg-white z-10 flex justify-center items-center" onClick={()=>{setPopup(false)}}>
+                <div className="absolute w-full h-full bg-white z-50 flex justify-center items-center" onClick={()=>{setPopup(false)}}>
                     <h1 className='text-center'>Click anywhere to return to setup.</h1>
                 </div>
             }

@@ -1,6 +1,8 @@
+"use client"
+
 import Guesses from "./guesses";
 import Scoreboard from "./scoreboard";
-import Camera from "./camera";
+import Camera from "../setup/camera";
 import Canvas from "./canvas";
 
 export default function Game(){
@@ -8,12 +10,14 @@ export default function Game(){
         <div className="w-full min-h-screen flex justify-content items-center p-24">
            <div className="w-1/4">
                 <Scoreboard></Scoreboard>
-                <Camera></Camera>
+                <Camera startCamera={true}></Camera>
             </div> 
-            <div className="w-1/2">
-                <div>Hints</div>
-                <Canvas></Canvas>
-                <div>Timer</div>
+            <div className="w-1/2 flex justify-center">
+                <div>
+                    <div>Hints</div>
+                    <Canvas></Canvas>
+                    <div>Timer</div>
+                </div>
             </div> 
             <div className="w-1/4">
                 <Guesses></Guesses>
