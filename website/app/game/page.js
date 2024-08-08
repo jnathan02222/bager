@@ -20,7 +20,6 @@ export default function Game(){
     }, [time]);
 
     //Copy Button
-    const [popup, setPopup] = useState(false)
     const [buttonText, setButtonText] = useState('Invite the Homies')
     const copyURL = () => {
         navigator.clipboard.writeText(window.location.href)

@@ -80,6 +80,8 @@ export default function SetUpPage(){
     }
     
     const [popup, setPopup] = useState(false)
+
+    //Copy Button
     const [buttonText, setButtonText] = useState('Copy invite link')
     const copyURL = () => {
         navigator.clipboard.writeText(window.location.href)
