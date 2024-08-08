@@ -9,7 +9,6 @@ export default function Camera(props){
         20: ["blue", "blue"]    //Pinky
     }
 
-
     //Initialization
     const [webcamSupported, setWebcamSupported] = useState(true);
     const handLandmarker = useRef(null);
@@ -61,8 +60,8 @@ export default function Camera(props){
 
         canvasElement.style.width = video.videoWidth;
         canvasElement.style.height = video.videoHeight;
-        canvasElement.width = video.videoWidth;
-        canvasElement.height = video.videoHeight;
+        canvasElement.width = video.offsetWidth;
+        canvasElement.height = video.offsetHeight;
         
         let startTimeMs = performance.now();
         if (lastVideoTime.current !== video.currentTime) {
@@ -78,7 +77,7 @@ export default function Camera(props){
 
                     if(index % 4 == 0 && index !== 0){
                         canvasCtx.beginPath();
-                        canvasCtx.arc(point.x * video.videoWidth, point.y * video.videoHeight, 10, 0, 2 * Math.PI);
+                        canvasCtx.arc(point.x * video.offsetWidth, point.y * video.offsetHeight, 10, 0, 2 * Math.PI);
                         canvasCtx.fillStyle = landmarkColors[index][0];
                         canvasCtx.strokeStyle = landmarkColors[index][1];
                         canvasCtx.lineWidth = 4;
@@ -94,10 +93,10 @@ export default function Camera(props){
     }
 
     return (
-        <div style={{minWidth: 640, minHeight:480}}className='border-4 border-black rounded-3xl flex justify-center items-center'>
-            <video id="webcam"  autoPlay={true} playsInline={true} className="rounded-2xl -z-10 -scale-x-[1]"></video>
+        <div style={{minWidth:320, minHeight:240}} id='display' className='border-4 border-black rounded-3xl flex justify-center items-center'>
+            <video id="webcam" autoPlay={true} playsInline={true} className="rounded-2xl -z-10 -scale-x-[1]"></video>
             <canvas id="output_canvas" className="absolute -scale-x-[1] z-10"></canvas>
-            <div  className="absolute">{webcamSupported ? "" : "Webcam is not supported by your browser"}</div>
+            <div className="absolute">{webcamSupported ? "" : "Webcam is not supported by your browser"}</div>
             {(!recording && !props.startCamera) && <button className="absolute p-2 border-4 rounded-md z-20" onClick={enableCam}>Start Recording</button>}
         </div>
     );

@@ -97,7 +97,7 @@ export default function SetUpPage(){
                     <h1 className='text-center'>Click anywhere to return to setup.</h1>
                 </div>
             }
-            <div className='w-full h-screen flex justify-center p-24'>
+            <div className='w-full min-h-screen flex justify-center p-24'>
                 <div className='flex flex-col items-center'>
                     <Camera></Camera>
                     <div className='w-full rounded-3xl flex justify-center items-center'>
