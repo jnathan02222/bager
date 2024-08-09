@@ -93,7 +93,7 @@ export default function Camera(props){
     }
 
     return (
-        <div style={{minWidth:320, minHeight:240}} id='display' className='border-4 border-black rounded-3xl flex justify-center items-center'>
+        <div style={{minWidth:320, minHeight:240}} id='display' className='rounded-3xl flex justify-center items-center'>
             <video id="webcam" autoPlay={true} playsInline={true} className="rounded-2xl -z-10 -scale-x-[1]"></video>
             <canvas id="output_canvas" className="absolute -scale-x-[1] z-10"></canvas>
             <div className="absolute">{webcamSupported ? "" : "Webcam is not supported by your browser"}</div>

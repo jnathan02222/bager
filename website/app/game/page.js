@@ -34,9 +34,7 @@ export default function Game(){
             <div className="w-1/4 p-5 mx-8">
                 <h1 className='text-2xl mb-10'>Points</h1>
                 <Scoreboard></Scoreboard>
-                <div>
-                    <Camera startCamera={true}></Camera>
-                </div>
+                <Camera startCamera={true}></Camera>
             </div> 
             <div className="p-10 pt-0 w-1/2 h-full flex flex-col items-center">
                 <Canvas></Canvas>
