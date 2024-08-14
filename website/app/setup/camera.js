@@ -9,6 +9,15 @@ export default function Camera(props){
         20: ["blue", "blue"]    //Pinky
     }
 
+    let coords = new Map();
+    // {
+    //         4 : [0,0], //Thumb
+    //         8 : [0,0], //Pointer
+    //         12: [0,0], //Middle
+    //         16: [0,0], //Ring
+    //         20: [0,0]  //Pinky
+    // }
+    
     //Initialization
     const [webcamSupported, setWebcamSupported] = useState(true);
     const handLandmarker = useRef(null);
@@ -83,10 +92,14 @@ export default function Camera(props){
                         canvasCtx.lineWidth = 4;
                         canvasCtx.fill();
                         canvasCtx.stroke();
+                        coords.set(index, [point.x, point.y]);
                     }
                     index += 1
                 }
             }
+        }
+        if(props.startCamera){
+            props.getCoords(coords);
         }
         canvasCtx.restore();
         window.requestAnimationFrame(predictWebcam);

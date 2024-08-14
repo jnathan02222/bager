@@ -29,16 +29,30 @@ export default function Game(){
         }, 1000);
     }
 
+    //Coordinates
+    const getCoords = (coords) => {
+        setLandmarkCoords(coords);
+    }
+
+    const [landmarkCoords, setLandmarkCoords] = useState({
+        4 : [0,0], //Thumb
+        8 : [0,0], //Pointer
+        12: [0,0], //Middle
+        16: [0,0], //Ring
+        20: [0,0]  //Pinky
+    });
+
     return (
         <div className="w-full h-screen flex justify-content items-center p-24">
             <div className="w-1/4 p-5 mx-8">
                 <h1 className='text-2xl mb-10'>Points</h1>
                 <Scoreboard></Scoreboard>
-                <Camera startCamera={true}></Camera>
+                <Camera startCamera={true} getCoords={getCoords}></Camera>
             </div> 
             <div className="p-10 pt-0 w-1/2 h-full flex flex-col items-center">
                 <Canvas></Canvas>
                 <div className='text-center'>{time}</div>
+                <div>{JSON.stringify(landmarkCoords)}</div>
             </div> 
             <div className="w-1/4 h-full flex flex-col items-center">
                 <Guesses></Guesses>
