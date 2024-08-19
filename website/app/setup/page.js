@@ -65,7 +65,7 @@ export default function SetUpPage(){
             widgets.push(
                 <div key={index}>
                     <div className="flex justify-center mt-5 items-center">
-                        <h1 className='text-xl self-center w-40'>{names[property]}</h1>
+                        <h1 className='text-lg self-center w-40'>{names[property]}</h1>
                         <div className="flex justify-between w-40">
                             <img className="w-5 h-5 mt-1 hover:cursor-pointer" src='/left.png' onClick={(e)=>{changeSettings(-iterations[property], property)}}></img>
                             <h1 className='text-lg self-center text-center'>{settings[property]}</h1>
@@ -108,8 +108,8 @@ export default function SetUpPage(){
                         <img className="hover:cursor-pointer w-16 h-16 m-10" src='/right.png' onClick={(e)=>changeAvatar(1, avatar)}></img>
                     </div>
                     <div className='flex'>
-                        <button className='w-48 text-center p-2 border-4 border-black rounded-lg mr-10 bg-green-200' onClick={()=>copyURL()}>{buttonText}</button>
-                        <Link className='w-48 text-center p-2 border-4 border-black rounded-lg bg-blue-200' href={'/game/'}>Start Game</Link>
+                        <button className='w-48 text-center p-2 border-4 border-black rounded-lg mr-10' onClick={()=>copyURL()}>{buttonText}</button>
+                        <Link className='w-48 text-center p-2 border-4 border-black rounded-lg' href={'/game/'}>Start Game</Link>
                     </div>
                 </div>
                 <div className="flex flex-col h-full">
@@ -122,19 +122,19 @@ export default function SetUpPage(){
                         <div>
                             <div className="flex items-center pb-2">
                                 <div className="bg-black w-10 h-10  rounded-full ml-5"></div>
-                                <div className='text-xl ml-4'>Baging with Bager</div>
+                                <div className='text-lg ml-4'>Baging with Bager</div>
                             </div>
                             <div className="flex items-center pb-2">
                                 <div className="bg-black w-10 h-10  rounded-full ml-5"></div>
-                                <div className='text-xl ml-4'>Pedo</div>
+                                <div className='text-lg ml-4'>Pedo</div>
                             </div>
                             <div className="flex items-center pb-2">
                                 <div className="bg-black w-10 h-10   rounded-full ml-5"></div>
-                                <div className='text-xl ml-4'>Meme Man</div>
+                                <div className='text-lg ml-4'>Meme Man</div>
                             </div>
                             <div className="flex items-center pb-2">
                                 <div className="bg-black w-10 h-10   rounded-full ml-5"></div>
-                                <div className='text-xl ml-4'>Willy Wigger</div>
+                                <div className='text-lg ml-4'>Willy Wigger</div>
                             </div>
                         </div>
                     </div>

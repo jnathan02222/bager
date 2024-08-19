@@ -37,19 +37,18 @@ export default function Game(){
     const [landmarkCoords, setLandmarkCoords] = useState({});
 
     return (
-        <div className="w-full h-screen flex justify-content items-center p-24">
-            <div className="w-1/4 p-5 mx-8">
-                <h1 className='text-2xl mb-10'>Points</h1>
+        <div className="w-full min-w-[1024px] min-h-screen flex justify-content  p-24">
+            <div className="w-1/5">
                 <Scoreboard></Scoreboard>
                 <Camera startCamera={true} getCoords={getCoords}></Camera>
             </div> 
-            <div className="p-10 pt-0 w-1/2 h-full flex flex-col items-center">
+            <div className="p-10 pt-0 w-3/5 h-full flex flex-col items-center">
                 <Canvas coords={landmarkCoords}></Canvas>
                 <div className='text-center'>{time}</div>
             </div> 
-            <div className="w-1/4 h-full flex flex-col items-center">
+            <div className="w-1/5 h-full flex flex-col items-center">
                 <Guesses></Guesses>
-                <button className='w-48 text-center p-2 border-4 border-black rounded-lg mt-5 bg-green-200' onClick={()=>copyURL()}>{buttonText}</button>
+                <button className='w-48 text-center p-2 border-4 border-black rounded-lg mt-5' onClick={()=>copyURL()}>{buttonText}</button>
             </div> 
         </div>
     );

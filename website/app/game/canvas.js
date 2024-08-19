@@ -1,101 +1,126 @@
 //import { createRoot } from 'react-dom/client';
 import { Stage, Layer, Line, Text } from 'react-konva';
 import { useState, useRef, useEffect } from "react";
-import { prototype } from 'postcss/lib/at-rule';
 
-// export default function Canvas(){
-//     return (
-//         <canvas id='output_canvas' className='w-full h-4/5 border-4 border-black p-5 m-10'></canvas>
-//     );
-// }
-
-export default function Canvas(props){
-  const [tool, setTool] = useState('pen');
-  const [lines, setLines] = useState([]);
-  const isDrawing = useRef(false);
-  const coords = props.coords;
-
-  const handleMouseDown = (e) => {
-
-    if (coords && Object.keys(coords).length !== 0) {
-      //const pos = e.target.getStage().getPointerPosition();
-      //setLines([...lines, { tool, points: [pos.x, pos.y] }]);
-      setLines([...lines, { tool, points: [width-coords[8][0]*width, coords[8][1]*height] }]);
-      isDrawing.current = true;
-      console.log(lines)
-      if(lines.length !==0){
-        let lastLine = lines[lines.length - 1];
-        lastLine.points = lastLine.points.concat([width-coords[8][0]*width, coords[8][1]*height]);
-        lines.splice(lines.length - 1, 1, lastLine);  
-      }
-    } else {
-      return;
-    }
-  };
-
-  const handleMouseMove = (e) => {
-    // no drawing - skipping
-    if (!isDrawing.current || !coords || Object.keys(coords).length === 0) {
-      return;
-    }
-
-    // let lastLine = lines[lines.length - 1];
-    // lastLine.points = lastLine.points.concat([width-coords[8][0]*width, coords[8][1]*height]);
-    // lines.splice(lines.length - 1, 1, lastLine);
-    // setLines(lines.concat());
-  };
-
-  const handleMouseUp = () => {
-    isDrawing.current = false;
-  };
-
+export default function Canvas({coords}){
+  const canvasRef = useRef(null);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-
   useEffect(() => {
-      const resizeObserver = new ResizeObserver((event) => {
-          setWidth(event[0].contentBoxSize[0].inlineSize);
-          setHeight(event[0].contentBoxSize[0].blockSize);
-      });
+    const handleResize = ()=>{
+      setWidth(canvasRef.current.offsetWidth);
+      setHeight(0.75 * canvasRef.current.offsetWidth);
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    }
+    
+  }, []);
 
-      resizeObserver.observe(document.getElementById("canvas"));
+  const pointingThreshold = 3;
+  const colors = {
+    "thumb" : "white",
+    "pointer" : "black",
+    "middle" : "red",
+    "ring" : "green",
+    "pinky" : "blue"
+  }
+
+  const [lines, setLines] = useState([]);
+  const isDrawing = useRef({
+      "thumb" : false,
+      "pointer" : false,
+      "middle" : false,
+      "ring" : false,
+      "pinky" : false
   });
 
+  function getDistance(palm, finger){
+    return Math.sqrt(Math.pow((palm.x-finger.x),2) + Math.pow((palm.y-finger.y),2))/Math.abs(finger.z);
+  }
+  useEffect(()=>{
+    console.log(isDrawing.current)
+    if("palm" in coords){
+      for(const finger in coords){
+        if(finger != "palm"){
+          if(getDistance(coords["palm"], coords[finger]) > pointingThreshold){
+            handleMouseDown(finger, coords[finger]);
+          }else{
+            handleMouseUp(finger);
+          }
+          handleMouseMove(finger, coords[finger]);
+        }
+      }
+    }
+  }, [coords]);
+
+  const handleMouseDown = (finger, point) => {
+    if(isDrawing.current[finger]){
+      return;
+    }
+    isDrawing.current[finger] = true;
+
+    setLines([...lines, { finger: finger, points: [point.x , point.y] }]);
+  };
+  const handleMouseMove = (finger, point) => {
+    // no drawing - skipping
+    if (!isDrawing.current[finger]) {
+      return;
+    }
+    let lastLine = undefined;
+    var i = lines.length - 1; 
+    for( ; i >= 0; i--){
+      if(lines[i].finger == finger){
+        lastLine = lines[i];
+        break;
+      }
+    }
+    // add point
+    if(!lastLine)return;
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+    // replace last
+    lines.splice(i, 1, lastLine);
+    setLines(lines.concat());
+  };
+  const handleMouseUp = (finger) => {
+    isDrawing.current[finger] = false;
+  };
+
+  
+
   return (
-    <div id='canvas' className='w-full h-4/5 border-4 border-black m-10 stage-canvas'>
+    <div ref={canvasRef} id='canvas' className='w-full border-4 border-black m-10 stage-canvas rounded-md -scale-x-[1] z-10 overflow-hidden	'>
       <Stage
         width={width}
         height={height}
-        onMouseDown={handleMouseDown}
-        onMousemove={handleMouseMove}
-        onMouseup={handleMouseUp}
+        
       >
         <Layer>
           {lines.map((line, i) => (
             <Line
               key={i}
-              points={line.points}
-              stroke="#df4b26"
+              points={line.points.map((point, i) => {
+                if(i % 2 == 0){
+                  return point * width;
+                }
+                return point * height;
+              })}
+              stroke={colors[line.finger]}
               strokeWidth={5}
               tension={0.5}
               lineCap="round"
               lineJoin="round"
               globalCompositeOperation={
-                line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                line.finger === 'thumb' ? 'destination-out' : 'source-over'
               }
             />
           ))}
         </Layer>
       </Stage>
-      {/* <select
-        value={tool}
-        onChange={(e) => {
-          setTool(e.target.value);
-        }}
-      >
-        <option value="pen">Pen</option>
-        <option value="eraser">Eraser</option>
-      </select> */}
+      
     </div>
   );
 };
