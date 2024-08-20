@@ -30,11 +30,14 @@ export default function Game(){
     }
 
     //Coordinates
-    const getCoords = (coords) => {
+    const getCoords = (coords, colors, clearCanvas) => {
         setLandmarkCoords(coords);
+        setColors(colors);
+        setClearCanvas(clearCanvas);
     }
-
+    const [colors, setColors] = useState({});
     const [landmarkCoords, setLandmarkCoords] = useState({});
+    const [clearCanvas, setClearCanvas] = useState(false);
 
     return (
         <div className="w-full min-w-[1024px] min-h-screen max-h-screen flex justify-content  p-24">
@@ -43,7 +46,7 @@ export default function Game(){
                 <Camera startCamera={true} getCoords={getCoords}></Camera>
             </div> 
             <div className="p-10 pt-0 w-3/5 h-full flex flex-col items-center">
-                <Canvas coords={landmarkCoords}></Canvas>
+                <Canvas coords={landmarkCoords} colors={colors} clearCanvas={clearCanvas}></Canvas>
                 <div className='text-center'>{time}</div>
             </div> 
             <div className="w-1/5 h-full flex flex-col items-center">

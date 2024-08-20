@@ -1,7 +1,7 @@
 import { Stage, Layer, Line } from 'react-konva';
 import { useState, useRef, useEffect } from "react";
 
-export default function Canvas({coords}){
+export default function Canvas({coords, colors, clearCanvas}){
   const canvasRef = useRef(null);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -19,12 +19,7 @@ export default function Canvas({coords}){
   }, []);
 
   const pointingThreshold = 1;
-  const colors = {
-    "pointer" : "black",
-    "middle" : "red",
-    "ring" : "green",
-    "pinky" : "blue"
-  }
+ 
 
   const [lines, setLines] = useState([]);
   const isDrawing = useRef({
@@ -51,6 +46,9 @@ export default function Canvas({coords}){
       }
     }
   }, [coords]);
+  useEffect(()=>{
+    setLines((prev)=>[]);
+  }, [clearCanvas])
 
   const handleMouseDown = (finger, point) => {
     if(isDrawing.current[finger]){
@@ -58,7 +56,7 @@ export default function Canvas({coords}){
     }
     isDrawing.current[finger] = true;
 
-    setLines(prev=>[...prev, { finger: finger, points: [point.x , point.y] }]);
+    setLines(prev=>[...prev, { finger: finger, color : colors[finger], points: [point.x , point.y] }]);
   };
   const handleMouseMove = (finger, point) => {
     // no drawing - skipping
@@ -108,8 +106,8 @@ export default function Canvas({coords}){
                 }
                 return point * height;
               })}
-              stroke={colors[line.finger]}
-              strokeWidth={5}
+              stroke={line.color}
+              strokeWidth={10}
               tension={0.5}
               lineCap="round"
               lineJoin="round"
