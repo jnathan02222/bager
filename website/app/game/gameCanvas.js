@@ -1,5 +1,4 @@
-//import { createRoot } from 'react-dom/client';
-import { Stage, Layer, Line, Text } from 'react-konva';
+import { Stage, Layer, Line } from 'react-konva';
 import { useState, useRef, useEffect } from "react";
 
 export default function Canvas({coords}){
@@ -19,9 +18,8 @@ export default function Canvas({coords}){
     
   }, []);
 
-  const pointingThreshold = 3;
+  const pointingThreshold = 1;
   const colors = {
-    "thumb" : "white",
     "pointer" : "black",
     "middle" : "red",
     "ring" : "green",
@@ -30,22 +28,20 @@ export default function Canvas({coords}){
 
   const [lines, setLines] = useState([]);
   const isDrawing = useRef({
-      "thumb" : false,
       "pointer" : false,
       "middle" : false,
       "ring" : false,
       "pinky" : false
   });
 
-  function getDistance(palm, finger){
-    return Math.sqrt(Math.pow((palm.x-finger.x),2) + Math.pow((palm.y-finger.y),2))/Math.abs(finger.z);
+  function getDistance(thumb, finger){
+    return Math.sqrt(Math.pow((thumb.x-finger.x),2) + Math.pow((thumb.y-finger.y),2))/Math.abs(finger.z);
   }
   useEffect(()=>{
-    console.log(isDrawing.current)
-    if("palm" in coords){
+    if("thumb" in coords){
       for(const finger in coords){
-        if(finger != "palm"){
-          if(getDistance(coords["palm"], coords[finger]) > pointingThreshold){
+        if(finger != "thumb"){
+          if(getDistance(coords["thumb"], coords[finger]) < pointingThreshold){
             handleMouseDown(finger, coords[finger]);
           }else{
             handleMouseUp(finger);
@@ -62,18 +58,22 @@ export default function Canvas({coords}){
     }
     isDrawing.current[finger] = true;
 
-    setLines([...lines, { finger: finger, points: [point.x , point.y] }]);
+    setLines(prev=>[...prev, { finger: finger, points: [point.x , point.y] }]);
   };
   const handleMouseMove = (finger, point) => {
     // no drawing - skipping
     if (!isDrawing.current[finger]) {
       return;
     }
+
+    setLines(prev=>{
     let lastLine = undefined;
-    var i = lines.length - 1; 
+
+    var i = prev.length - 1; 
     for( ; i >= 0; i--){
-      if(lines[i].finger == finger){
-        lastLine = lines[i];
+      if(prev[i].finger == finger){
+        console.log(i + " " + prev.length)
+        lastLine = prev[i];
         break;
       }
     }
@@ -82,8 +82,9 @@ export default function Canvas({coords}){
     lastLine.points = lastLine.points.concat([point.x, point.y]);
 
     // replace last
-    lines.splice(i, 1, lastLine);
-    setLines(lines.concat());
+    prev.splice(i, 1, lastLine);
+    return prev.concat();
+    });
   };
   const handleMouseUp = (finger) => {
     isDrawing.current[finger] = false;
@@ -92,7 +93,7 @@ export default function Canvas({coords}){
   
 
   return (
-    <div ref={canvasRef} id='canvas' className='w-full border-4 border-black m-10 stage-canvas rounded-md -scale-x-[1] z-10 overflow-hidden	'>
+    <div ref={canvasRef}  className='w-full border-4 border-black m-10 stage-canvas rounded-md -scale-x-[1] z-10 overflow-hidden	'>
       <Stage
         width={width}
         height={height}

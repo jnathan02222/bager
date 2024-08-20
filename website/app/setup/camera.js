@@ -10,7 +10,6 @@ export default function Camera(props){
         20: ["blue", "blue"]    //Pinky
     }
     const indexToFinger = {
-        0 : "palm",
         4 : "thumb",
         8 : "pointer",
         12: "middle",
@@ -103,7 +102,7 @@ export default function Camera(props){
                 let index = 0;
                 for (const point of landmarks){
 
-                    if(index % 4 == 0){
+                    if(index % 4 == 0 && index !== 0){
                         canvasCtx.beginPath();
                         canvasCtx.arc(point.x * video.offsetWidth, point.y * video.offsetHeight, video.offsetWidth/50, 0, 2 * Math.PI); //Math.abs(point.z)*50 or video.offsetWidth/50
                         canvasCtx.fillStyle = landmarkColors[index][0];

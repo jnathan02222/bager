@@ -3,7 +3,7 @@
 import Guesses from "./guesses";
 import Scoreboard from "./scoreboard";
 import Camera from "../setup/camera";
-import Canvas from "./canvas";
+import Canvas from "./gameCanvas";
 import { useEffect, useState } from "react"
 
 export default function Game(){
@@ -37,8 +37,8 @@ export default function Game(){
     const [landmarkCoords, setLandmarkCoords] = useState({});
 
     return (
-        <div className="w-full min-w-[1024px] min-h-screen flex justify-content  p-24">
-            <div className="w-1/5">
+        <div className="w-full min-w-[1024px] min-h-screen max-h-screen flex justify-content  p-24">
+            <div className="w-1/5 flex flex-col">
                 <Scoreboard></Scoreboard>
                 <Camera startCamera={true} getCoords={getCoords}></Camera>
             </div> 
