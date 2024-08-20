@@ -1,4 +1,4 @@
-import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
+import { FilesetResolver, HandLandmarker, GestureRecognizer } from "@mediapipe/tasks-vision";
 import { useState, useRef, useEffect } from "react";
 export default function Camera(props){
     const landmarkColors = {
@@ -20,6 +20,8 @@ export default function Camera(props){
     //Initialization
     const [webcamSupported, setWebcamSupported] = useState(true);
     const handLandmarker = useRef(null);
+    const gestureRecognizer = useRef(null);
+    const recordingRef = useRef(false);
     const videoElem = useRef(null);
     const canvasElem = useRef(null);
 
@@ -36,12 +38,26 @@ export default function Camera(props){
           runningMode: 'VIDEO',
           numHands: 1
         });
+        gestureRecognizer.current = await GestureRecognizer.createFromOptions(vision, {
+            baseOptions: {
+                modelAssetPath:
+                "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task",
+                delegate: "GPU"
+            },
+            runningMode: 'VIDEO'
+        });
+        if(props.startCamera){
+            if(!recordingRef.current)
+                enableCam();
+            recordingRef.current = true;
+        }
     };
     useEffect(() => {
         createHandLandmarker(animationFrameId.current);
         setWebcamSupported(!!navigator.mediaDevices?.getUserMedia);
         return () => {
             handLandmarker.current = null;
+            gestureRecognizer.current = null;
         }
     }, []);
 
@@ -50,16 +66,13 @@ export default function Camera(props){
 
     //Recording
     const [recording, setRecording] = useState(false);
+    const [gesture, setGesture] = useState(undefined);
     const lastVideoTime = useRef(-1);
     const results = useRef(undefined);
     const animationFrameId = useRef(null);
 
-    
-
-
-
     const enableCam = () => {
-        if(handLandmarker.current === null){
+        if(handLandmarker.current === null || gestureRecognizer.current == null){
             return
         }
         setRecording(true);
@@ -94,6 +107,12 @@ export default function Camera(props){
         if (lastVideoTime.current !== video.currentTime) {
             lastVideoTime.current = video.currentTime;
             results.current = handLandmarker.current.detectForVideo(video, startTimeMs);
+
+            const gestureInfo = gestureRecognizer.current.recognizeForVideo(video, startTimeMs);
+            if(gestureInfo.gestures.length > 0)
+                setGesture(gestureInfo.gestures[0][0].categoryName.replace("_", " "));
+            else
+                setGesture("None");
         }
         canvasCtx.save();
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -124,11 +143,14 @@ export default function Camera(props){
     }
 
     return (
-        <div className='rounded-3xl flex justify-center items-center'>
-            <video ref={videoElem} id="webcam" autoPlay={true} playsInline={true} className="rounded-2xl -z-10 -scale-x-[1]"></video>
-            <canvas ref={canvasElem} id="output_canvas" className="absolute -scale-x-[1] z-10"></canvas>
-            <div className="absolute">{webcamSupported ? "" : "Webcam is not supported by your browser"}</div>
-            {(!recording) && <button className="absolute p-2 border-4 rounded-md z-20" onClick={enableCam}>Start Recording</button>}
+        <div>
+            <div className='rounded-3xl flex justify-center items-center'>
+                <video ref={videoElem} id="webcam" autoPlay={true} playsInline={true} className="rounded-2xl -z-10 -scale-x-[1]"></video>
+                <canvas ref={canvasElem} id="output_canvas" className="absolute -scale-x-[1] z-10"></canvas>
+                <div className="absolute">{webcamSupported ? "" : "Webcam is not supported by your browser"}</div>
+                {(!recording && !props.startCamera) && <button className="absolute p-2 border-4 rounded-md z-20" onClick={enableCam}>Start Recording</button>}
+            </div>
+            <div>{gesture}</div>
         </div>
     );
 }

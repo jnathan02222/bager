@@ -1,0 +1,2 @@
+#LOADING WIDGET
+#Changing palette/tool on gesture

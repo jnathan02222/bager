@@ -72,7 +72,6 @@ export default function Canvas({coords}){
     var i = prev.length - 1; 
     for( ; i >= 0; i--){
       if(prev[i].finger == finger){
-        console.log(i + " " + prev.length)
         lastLine = prev[i];
         break;
       }
