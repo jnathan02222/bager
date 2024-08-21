@@ -1,5 +1,6 @@
-import { Stage, Layer, Line } from 'react-konva';
+import { Stage, Layer, Line, Circle } from 'react-konva';
 import { useState, useRef, useEffect } from "react";
+import { RedirectType } from 'next/navigation';
 
 export default function Canvas({coords, colors, clearCanvas}){
   const canvasRef = useRef(null);
@@ -50,6 +51,20 @@ export default function Canvas({coords, colors, clearCanvas}){
     setLines((prev)=>[]);
   }, [clearCanvas])
 
+  const prevColors = useRef(colors);
+  useEffect(()=>{
+    if(prevColors.current["pointer"] != colors["pointer"]){
+      isDrawing.current = {
+        "pointer" : false,
+        "middle" : false,
+        "ring" : false,
+        "pinky" : false
+      }
+      prevColors.current = colors;
+    }
+    
+  }, [colors]);
+
   const handleMouseDown = (finger, point) => {
     if(isDrawing.current[finger]){
       return;
@@ -65,6 +80,8 @@ export default function Canvas({coords, colors, clearCanvas}){
     }
 
     setLines(prev=>{
+    if(!prev)return prev;
+
     let lastLine = undefined;
 
     var i = prev.length - 1; 
@@ -75,7 +92,7 @@ export default function Canvas({coords, colors, clearCanvas}){
       }
     }
     // add point
-    if(!lastLine)return;
+    if(!lastLine)return prev;
     lastLine.points = lastLine.points.concat([point.x, point.y]);
 
     // replace last
@@ -86,6 +103,15 @@ export default function Canvas({coords, colors, clearCanvas}){
   const handleMouseUp = (finger) => {
     isDrawing.current[finger] = false;
   };
+  function showFingers(){
+    var circles = [];
+    for(const finger in coords){
+      if(finger != "thumb" && isDrawing.current[finger]){
+        circles.push(<Circle key={finger} x={coords[finger].x * width} y={coords[finger].y * height} width={colors[finger] == "white" ? 40 : 20} height={colors[finger] == "white" ? 40 : 20} fill={colors[finger]} stroke="black"></Circle>);
+      }
+    }
+    return circles;
+  }
 
   
 
@@ -107,15 +133,16 @@ export default function Canvas({coords, colors, clearCanvas}){
                 return point * height;
               })}
               stroke={line.color}
-              strokeWidth={10}
+              strokeWidth={line.color == "white" ? 40 : 10}
               tension={0.5}
               lineCap="round"
               lineJoin="round"
-              globalCompositeOperation={
-                line.finger === 'thumb' ? 'destination-out' : 'source-over'
-              }
+            
             />
           ))}
+        </Layer>
+        <Layer>
+          {showFingers()}
         </Layer>
       </Stage>
       

@@ -4,11 +4,11 @@ import { ColorRing } from 'react-loader-spinner'
 
 export default function Camera(props){
     const landmarkColors = {
-        4 : ["white", "white"], //Thumb
-        8 : ["black", "black"], //Pointer
-        12: ["red", "magenta"],     //Middle
-        16: ["green", "yellow"], //Ring
-        20: ["blue", "cyan"]    //Pinky
+        4 : ["gray", "gray"], //Thumb
+        8 : ["black", "white"], //Pointer
+        12: ["magenta", "red"],     //Middle
+        16: ["yellow", "green"], //Ring
+        20: ["cyan", "blue"]    //Pinky
     }
     const indexToFinger = {
         4 : "thumb",
@@ -128,6 +128,7 @@ export default function Camera(props){
                 }else if(gesture == "Victory"){
                     palette.current = 1;
                 }   
+
                 setGesture(gesture);
             }else{
                 setGesture("None");
