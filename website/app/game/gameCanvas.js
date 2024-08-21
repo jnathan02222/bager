@@ -1,6 +1,5 @@
 import { Stage, Layer, Line, Circle } from 'react-konva';
 import { useState, useRef, useEffect } from "react";
-import { RedirectType } from 'next/navigation';
 
 export default function Canvas({coords, colors, clearCanvas}){
   const canvasRef = useRef(null);
@@ -49,6 +48,12 @@ export default function Canvas({coords, colors, clearCanvas}){
   }, [coords]);
   useEffect(()=>{
     setLines((prev)=>[]);
+    isDrawing.current = {
+      "pointer" : false,
+      "middle" : false,
+      "ring" : false,
+      "pinky" : false
+    }
   }, [clearCanvas])
 
   const prevColors = useRef(colors);
