@@ -70,12 +70,13 @@ export default function Canvas({coords, colors, clearCanvas}){
     
   }, [colors]);
 
+  const sensitivity = 0.2;
+
   const handleMouseDown = (finger, point) => {
     if(isDrawing.current[finger]){
       return;
     }
     isDrawing.current[finger] = true;
-
     setLines(prev=>[...prev, { finger: finger, color : colors[finger], points: [point.x , point.y] }]);
   };
   const handleMouseMove = (finger, point) => {
@@ -98,13 +99,18 @@ export default function Canvas({coords, colors, clearCanvas}){
     }
     // add point
     if(!lastLine)return prev;
-    lastLine.points = lastLine.points.concat([point.x, point.y]);
-
-    // replace last
-    prev.splice(i, 1, lastLine);
-    return prev.concat();
+    let lastPoint = {x: lastLine.points[lastLine.points.length - 4], y: lastLine.points[lastLine.points.length - 3]};
+    if(lastPoint.x == undefined){
+      lastLine.points = lastLine.points.concat([point.x, point.y]);
+    } else if (getDistance(lastPoint, point) > sensitivity){
+      lastLine.points = lastLine.points.concat([point.x, point.y]);
+      // replace last
+      prev.splice(i, 1, lastLine);
+      return prev.concat();
+    }
+    return prev;
     });
-  };
+  }
   const handleMouseUp = (finger) => {
     isDrawing.current[finger] = false;
   };
@@ -125,7 +131,6 @@ export default function Canvas({coords, colors, clearCanvas}){
       <Stage
         width={width}
         height={height}
-        
       >
         <Layer>
           {lines.map((line, i) => (
