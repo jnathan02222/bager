@@ -2,15 +2,11 @@ package com.example.backend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-
 
 @SpringBootApplication
 @RestController
@@ -21,9 +17,9 @@ public class BackendApplication {
 
 	RestTemplate restTemplate = new RestTemplate();
 
-
-
-	@GetMapping("/**")
+	
+	//Captures everything execept /ws/**
+	@GetMapping({"/", "/setup", "/game", "/_next/**", "/*"})
     public ResponseEntity<byte[]> proxyRequest() {
         String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString().replace("http://localhost:8080", "http://localhost:3000");
 	
@@ -33,3 +29,6 @@ public class BackendApplication {
 				.body(response.getBody());
 	}
 }
+
+
+

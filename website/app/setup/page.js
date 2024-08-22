@@ -1,12 +1,16 @@
 "use client"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Camera from "./camera"
 import Link from "next/link"
-
+import MultiplayerClient from './multiplayerClient'
 export default function SetUpPage(){
 
+    
+
+    
     //Avatar
-    const [avatar, setAvatar] = useState(0)
+    const [avatar, setAvatar] = useState(0);
+    
 
     const changeAvatar = (iteration, curAvatar) => {
         let newAvatar = curAvatar + iteration;
@@ -93,6 +97,7 @@ export default function SetUpPage(){
     
     return (
         <div className="relative">
+            <MultiplayerClient></MultiplayerClient>
             <button className='text-3xl font-bold absolute p-5' onClick={()=>{setPopup(true)}}>?</button>
             {popup && 
                 <div className="absolute w-full h-full bg-white z-50 flex justify-center items-center" onClick={()=>{setPopup(false)}}>

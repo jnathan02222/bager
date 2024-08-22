@@ -59,9 +59,10 @@ export default function Camera(props){
         
     };
     useEffect(() => {
-        createHandLandmarker(animationFrameId.current);
+        createHandLandmarker();
         setWebcamSupported(!!navigator.mediaDevices?.getUserMedia);
         return () => {
+            cancelAnimationFrame(animationFrameId.current);
             handLandmarker.current = null;
             gestureRecognizer.current = null;
         }
@@ -99,13 +100,12 @@ export default function Camera(props){
         setLoading(false);
         const video = videoElem.current;
         const canvasElement = canvasElem.current;
-        let canvasCtx = undefined;
+        let canvasCtx;
         try {
             canvasCtx = canvasElement.getContext("2d");
         }catch{
             return;
         }
-        
 
         canvasElement.style.width = video.videoWidth;
         canvasElement.style.height = video.videoHeight;
