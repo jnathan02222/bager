@@ -19,9 +19,9 @@ export default function JoinRoom() {
               <img style={{width: 100, height: 100}} src="/logo.png"></img>
 
             </div>
-            <input className='w-96 p-2 border-4 border-black border-b-0 rounded-t-md focus:outline-none' placeholder='Room ID' value={roomId} onChange={inputHandler}></input>
-            <Link className='w-96 text-center p-2 border-4 border-black rounded-b-md text-black' href={'/game/'+roomId}>Join Room</Link>
-            <Link className='w-96 text-center mt-7 p-2 border-4 border-black rounded-md text-black' href='/setup'>Create Room</Link>
+            <input className='w-full p-2 border-4 border-black border-b-0 rounded-t-md focus:outline-none' placeholder='Room ID' value={roomId} onChange={inputHandler}></input>
+            <Link className='w-full  text-center p-2 border-4 border-black rounded-b-md text-black' href={'/game/'+roomId}>Join Room</Link>
+            <Link className='w-full  text-center mt-7 p-2 border-4 border-black rounded-md text-black' href='/setup'>Create Room</Link>
           </div>
       </div>
       <div className="w-full min-h-screen absolute bg-[url('/background.png')] bg-repeat opacity-30 top-0	-z-10" ></div>

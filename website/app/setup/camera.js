@@ -177,7 +177,6 @@ export default function Camera(props){
                 <div className="absolute">{webcamSupported ? "" : "Webcam is not supported by your browser"}</div>
                 {(!recording && !props.startCamera && !loading) && <button className="absolute p-2 border-4 rounded-md z-20" onClick={enableCam}>Start Recording</button>}
             </div>
-            <div>{gesture}</div>
         </div>
     );
 }

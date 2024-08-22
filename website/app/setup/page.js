@@ -102,6 +102,8 @@ export default function SetUpPage(){
             <div className='w-full min-h-screen flex justify-center p-24'>
                 <div className='flex flex-col items-center'>
                     <Camera></Camera>
+                    <input className='w-48  border-b-2 border-gray-500  focus:outline-none mt-4 mb-2' placeholder='Name'></input>
+
                     <div className='w-full rounded-3xl flex justify-center items-center'>
                         <img className="hover:cursor-pointer w-16 h-16 m-10" src='/left.png' onClick={(e)=>changeAvatar(-1, avatar)}></img>
                         <img className='' src={'/avatar' + avatar + '.png'} alt={avatar}></img>
