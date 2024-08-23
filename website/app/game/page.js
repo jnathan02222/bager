@@ -5,6 +5,7 @@ import Scoreboard from "./scoreboard";
 import Camera from "../setup/camera";
 import Canvas from "./gameCanvas";
 import { useEffect, useState } from "react"
+import MultiplayerClient from "../setup/multiplayerClient";
 
 export default function Game(){
     //Timer
@@ -41,6 +42,7 @@ export default function Game(){
 
     return (
         <div className="w-full min-w-[1024px] min-h-screen max-h-screen flex justify-content  p-24">
+            <MultiplayerClient></MultiplayerClient>
             <div className="w-1/5 flex flex-col">
                 <Scoreboard></Scoreboard>
                 <Camera startCamera={true} getCoords={getCoords}></Camera>

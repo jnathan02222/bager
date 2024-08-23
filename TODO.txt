@@ -1,1 +1,21 @@
-#Changing palette/tool on gesture
+#SERVER SIDE
+#Append a random string as a room key when /setup is accessed
+    #Save this string somewhere to avoid conflicts
+    #Implementation: append querystring first and then forward to proxy?
+
+#Adjust ws controller to send to the same room it came from
+#Design a heartbeat function to constantly relay the latest data to all clients
+#Detect player disconnects
+
+#CLIENT SIDE
+#When first connecting, send initial data (name and avatar) and retrieve current data (Settings / Players)
+    #Subscripe to the correct room
+#On interactions with avatar, name or settings, publish new data to the server
+    #Note, maybe only let 1 person touch the settings
+
+
+#GAME LOOP
+#Select a player
+#Player chooses a word
+#Draws while people guess
+#Finish and pass play to next player

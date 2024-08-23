@@ -16,13 +16,14 @@ public class BackendApplication {
 	}
 
 	RestTemplate restTemplate = new RestTemplate();
-
 	
+
+
 	//Captures everything execept /ws/**
 	@GetMapping({"/", "/setup", "/game", "/_next/**", "/*"})
     public ResponseEntity<byte[]> proxyRequest() {
         String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString().replace("http://localhost:8080", "http://localhost:3000");
-	
+		
 		ResponseEntity<byte[]> response = restTemplate.getForEntity(path, byte[].class);
 		return ResponseEntity.status(response.getStatusCode())
 				.headers(response.getHeaders())

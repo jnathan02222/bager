@@ -5,9 +5,6 @@ import Link from "next/link"
 import MultiplayerClient from './multiplayerClient'
 export default function SetUpPage(){
 
-    
-
-    
     //Avatar
     const [avatar, setAvatar] = useState(0);
     
@@ -24,38 +21,32 @@ export default function SetUpPage(){
 
     //Settings
     const names = {
-        players: "Player",
         time: "Time",
         rounds: "Rounds",
         hints: "Hints"
     }
     const range = {
-        players: [2, 8],
         time: [30, 180],
         rounds: [1, 10],
         hints: [0, 3]
     }
     const iterations = {
-        players: 1,
         time: 30,
         rounds: 1,
         hints: 1,
     }
     const [settings, setSettings] = useState({
-        players: 2,
         time: 60,
         rounds: 3,
         hints: 1
     })
     const changeSettings = (iteration, property) => {
         var newSettings = {
-            players: settings.players,
             time: settings.time,
             rounds: settings.rounds,
             hints: settings.hints
         }
-        console.log("Property: " + property)
-        console.log(range[property])
+        
         if (newSettings[property] + iteration > range[property][1] || newSettings[property] + iteration < range[property][0]) {
             return
         }
@@ -94,6 +85,30 @@ export default function SetUpPage(){
             setButtonText('Copy to Clipboard')
         }, 1000);
     }
+
+    const [playerName, setPlayerName] = useState('')
+    const playerInputHandler = (e) => {
+        setPlayerName(e.target.value)
+    }
+
+    const [listOfPlayers, setListOfPlayers] = useState([])
+    const addPlayerJoined = () => {
+        setListOfPlayers(prev => [...prev, playerName])
+    }
+    
+    const showOnlinePlayers = (listOfPlayers) => {
+        let list = [];
+        for(const name of listOfPlayers){
+            list.push(
+                <div key={name} className="flex items-center pb-2">
+                    <div className="bg-black w-10 h-10 rounded-full ml-5"></div>
+                    {/* <img className="w-10 h-10 rounded-full ml-5" src='/avatar' + avatar + '.png' alt={avatar} </img> */}
+                    <div className='text-lg ml-4'>{name}</div>
+                </div>
+            )
+        }
+        return list;
+    }
     
     return (
         <div className="relative">
@@ -107,7 +122,7 @@ export default function SetUpPage(){
             <div className='w-full min-h-screen flex justify-center p-24'>
                 <div className='flex flex-col items-center'>
                     <Camera></Camera>
-                    <input className='w-48  border-b-2 border-gray-500  focus:outline-none mt-4 mb-2' placeholder='Name'></input>
+                    <input className='w-48  border-b-2 border-gray-500 focus:outline-none mt-4 mb-2' placeholder='Name' value={playerName} onChange={playerInputHandler}></input>
 
                     <div className='w-full rounded-3xl flex justify-center items-center'>
                         <img className="hover:cursor-pointer w-16 h-16 m-10" src='/left.png' onClick={(e)=>changeAvatar(-1, avatar)}></img>
@@ -127,22 +142,7 @@ export default function SetUpPage(){
                     <div className='ml-5 pb-3 border-4 border-black rounded-3xl h-full'>
                         <h1 className='ml-5 text-xl py-5 '>Players</h1>
                         <div>
-                            <div className="flex items-center pb-2">
-                                <div className="bg-black w-10 h-10  rounded-full ml-5"></div>
-                                <div className='text-lg ml-4'>Baging with Bager</div>
-                            </div>
-                            <div className="flex items-center pb-2">
-                                <div className="bg-black w-10 h-10  rounded-full ml-5"></div>
-                                <div className='text-lg ml-4'>Pedo</div>
-                            </div>
-                            <div className="flex items-center pb-2">
-                                <div className="bg-black w-10 h-10   rounded-full ml-5"></div>
-                                <div className='text-lg ml-4'>Meme Man</div>
-                            </div>
-                            <div className="flex items-center pb-2">
-                                <div className="bg-black w-10 h-10   rounded-full ml-5"></div>
-                                <div className='text-lg ml-4'>Willy Wigger</div>
-                            </div>
+                            {showOnlinePlayers(listOfPlayers)}
                         </div>
                     </div>
                 </div>

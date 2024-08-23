@@ -1,23 +1,47 @@
 
 import { useRef, useEffect } from "react"
-
 import { Client } from '@stomp/stompjs';
 
-
-export default function MultiplayerClient(){
+export default function MultiplayerClient({addPlayerJoined, addGuesses, setSettings}){
 
     const stompClient = useRef(undefined);
+
+    function getRoom(){
+        const urlParams = new URLSearchParams(window.location.search);
+        const room = urlParams.get("room");
+        return room;
+    }
+
     useEffect(()=>{
         stompClient.current = new Client({
             brokerURL: 'ws://localhost:8080/ws/connect',
-            
         });
         
         stompClient.current.onConnect = (frame) => {
             console.log('Connected: ' + frame);
-            stompClient.current.subscribe('/ws/topic/hello', (msg) => {
+            
+            const room = getRoom();
+            // acknowledges change in endpoint and makes changes to frontend
+            stompClient.current.subscribe('/ws/topic/players/'+room, (msg) => {
                 console.log(msg.body)
+                //addPlayerJoined(msg);
             });
+
+            
+
+            stompClient.current.subscribe('/ws/topic/settings/'+room, (msg) => {
+                //setSettings(msg);
+            });
+
+            stompClient.current.subscribe('/ws/topic/canvas/'+room, (msg) => {
+                
+            });
+
+            stompClient.current.subscribe('/ws/topic/chat/'+room, (msg) => {
+                //addGuesses(msg);
+            });
+            
+            
         };
 
         stompClient.current.onWebSocketError = (error) => {
@@ -36,6 +60,8 @@ export default function MultiplayerClient(){
     },[])
 
     return (
-        <div></div>
+        <div>
+            
+        </div>
     );
 }
