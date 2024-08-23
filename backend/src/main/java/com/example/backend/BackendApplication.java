@@ -40,10 +40,10 @@ public class BackendApplication {
 
 	private MultiplayerService multiplayerService;
 	@Autowired
-	public FrontendController(MultiplayerService multiplayerService){
+	public BackendApplication(MultiplayerService multiplayerService){
 		this.multiplayerService = multiplayerService;
 	}
-
+	
 	@GetMapping("/setup")
 	public ResponseEntity<byte[]> setup(@RequestParam(required = false) String room){
 		if(room == null){
@@ -53,6 +53,8 @@ public class BackendApplication {
 			return redirect("/setup?room="+roomKey);
 		}else if(!multiplayerService.roomExists(room)){
 			return redirect("/noRoom");
+		}else if(multiplayerService.getRoom(room).isGameStarted()){
+			return redirect("/game");
 		}
 		return proxyRequest();
 	}
@@ -61,6 +63,8 @@ public class BackendApplication {
 	public ResponseEntity<byte[]> game(@RequestParam(required = false) String room){
 		if(room == null || !multiplayerService.roomExists(room)){
 			return redirect("/noRoom");
+		}else if(!multiplayerService.getRoom(room).isGameStarted()){
+			return redirect("/setup");
 		}
 		//Proceed
 		return proxyRequest();
@@ -82,11 +86,6 @@ public class BackendApplication {
         return new ResponseEntity<byte[]>(headers, HttpStatus.FOUND);
 	}
 
-}
-
-public class BackendApplication {
-	
-	
 }
 
 

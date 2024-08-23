@@ -89,30 +89,44 @@ export default function SetUpPage(){
     const [playerName, setPlayerName] = useState('')
     const playerInputHandler = (e) => {
         setPlayerName(e.target.value)
+        
     }
 
     const [listOfPlayers, setListOfPlayers] = useState([])
-    const addPlayerJoined = () => {
-        setListOfPlayers(prev => [...prev, playerName])
+    const updatePlayers = (players) => {
+        setListOfPlayers(players)
     }
     
     const showOnlinePlayers = (listOfPlayers) => {
         let list = [];
-        for(const name of listOfPlayers){
+        let index = 0;
+        for(const player of listOfPlayers){
             list.push(
-                <div key={name} className="flex items-center pb-2">
-                    <div className="bg-black w-10 h-10 rounded-full ml-5"></div>
+                <div key={index} className="flex items-center pb-2">
+                    <img className='w-10 h-10 ml-5' src={'/avatar' + player.avatar + '.png'} alt={player.avatar}></img>
                     {/* <img className="w-10 h-10 rounded-full ml-5" src='/avatar' + avatar + '.png' alt={avatar} </img> */}
-                    <div className='text-lg ml-4'>{name}</div>
+                    <div className='text-lg ml-4'>{player.name}</div>
                 </div>
-            )
+            );
+            index += 1;
         }
         return list;
     }
-    
+
+
+    const [roomKey, setRoomKey] = useState("");
+    useEffect(()=>{
+        const urlParams = new URLSearchParams(window.location.search);
+        setRoomKey(urlParams.get("room"));
+
+
+
+    },
+    [])
+
     return (
         <div className="relative">
-            <MultiplayerClient></MultiplayerClient>
+            <MultiplayerClient updatePlayers={updatePlayers} name={playerName} avatar={avatar}></MultiplayerClient>
             <button className='text-3xl font-bold absolute p-5' onClick={()=>{setPopup(true)}}>?</button>
             {popup && 
                 <div className="absolute w-full h-full bg-white z-50 flex justify-center items-center" onClick={()=>{setPopup(false)}}>
@@ -122,7 +136,7 @@ export default function SetUpPage(){
             <div className='w-full min-h-screen flex justify-center p-24'>
                 <div className='flex flex-col items-center'>
                     <Camera></Camera>
-                    <input className='w-48  border-b-2 border-gray-500 focus:outline-none mt-4 mb-2' placeholder='Name' value={playerName} onChange={playerInputHandler}></input>
+                    <input className='w-48  border-b-2 border-gray-500 focus:outline-none mt-4 mb-2' placeholder={"Player"} value={playerName}  onChange={playerInputHandler}></input>
 
                     <div className='w-full rounded-3xl flex justify-center items-center'>
                         <img className="hover:cursor-pointer w-16 h-16 m-10" src='/left.png' onClick={(e)=>changeAvatar(-1, avatar)}></img>
@@ -131,7 +145,7 @@ export default function SetUpPage(){
                     </div>
                     <div className='flex'>
                         <button className='w-48 text-center p-2 border-4 border-black rounded-lg mr-10' onClick={()=>copyURL()}>{buttonText}</button>
-                        <Link className='w-48 text-center p-2 border-4 border-black rounded-lg' href={'/game/'}>Start Game</Link>
+                        <Link className='w-48 text-center p-2 border-4 border-black rounded-lg' href={'/game?room=' + roomKey}>Start Game</Link>
                     </div>
                 </div>
                 <div className="flex flex-col h-full">

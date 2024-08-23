@@ -20,7 +20,7 @@ export default function JoinRoom() {
 
             </div>
             <input className='w-full p-2 border-4 border-black border-b-0 rounded-t-md focus:outline-none' placeholder='Room ID' value={roomId} onChange={inputHandler}></input>
-            <Link className='w-full  text-center p-2 border-4 border-black rounded-b-md text-black' href={'/game?room='+roomId}>Join Room</Link>
+            <Link className='w-full  text-center p-2 border-4 border-black rounded-b-md text-black' href={'/setup?room='+roomId}>Join Room</Link>
             <Link className='w-full  text-center mt-7 p-2 border-4 border-black rounded-md text-black' href='/setup'>Create Room</Link>
           </div>
       </div>
