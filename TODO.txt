@@ -1,11 +1,12 @@
 #SERVER SIDE
-#Append a random string as a room key when /setup is accessed
-    #Save this string somewhere to avoid conflicts
-    #Implementation: append querystring first and then forward to proxy?
+#Append a random string as a room key when /setup is accessed DONE
+    #Save this string somewhere to avoid conflicts DONE
+    #Implementation: append querystring first and then forward to proxy? DONE
 
-#Adjust ws controller to send to the same room it came from
+#Adjust ws controller to send to the same room it came from DONE
 #Design a heartbeat function to constantly relay the latest data to all clients
 #Detect player disconnects
+    #Deleting a room
 
 #CLIENT SIDE
 #When first connecting, send initial data (name and avatar) and retrieve current data (Settings / Players)

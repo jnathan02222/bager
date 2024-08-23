@@ -16,7 +16,7 @@ export default function Scoreboard({players}) {
     return (
         <div className='mt-10 border-4 p-5 border-black rounded-md mb-5'>
             <h1 className='text-2xl mb-5'>Points</h1>
-            <div>{playerScoreboard}</div>
+            <div>{playerScoreboard()}</div>
 
         </div>
     );

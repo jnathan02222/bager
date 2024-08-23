@@ -44,7 +44,7 @@ export default function Game(){
         <div className="w-full min-w-[1024px] min-h-screen max-h-screen flex justify-content  p-24">
             <MultiplayerClient></MultiplayerClient>
             <div className="w-1/5 flex flex-col">
-                <Scoreboard></Scoreboard>
+                <Scoreboard players={[]}></Scoreboard>
                 <Camera startCamera={true} getCoords={getCoords}></Camera>
             </div> 
             <div className="p-10 pt-0 w-3/5 h-full flex flex-col items-center">

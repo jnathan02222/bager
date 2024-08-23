@@ -5,10 +5,18 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 // reads updates in the /players endpoint and sends it to the /ws/topic/players endpoint
 @Controller
 public class MultiplayerController {
+    private MultiplayerService multiplayerService;
+	@Autowired
+	public MultiplayerController(MultiplayerService multiplayerService){
+		this.multiplayerService = multiplayerService;
+	}
+
+
     @MessageMapping("/players/{id}")
     @SendTo("/ws/topic/players/{id}")
     public String player(@DestinationVariable String id) throws Exception{
