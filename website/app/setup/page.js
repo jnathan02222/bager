@@ -1,5 +1,5 @@
 "use client"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, use } from "react"
 import Camera from "./camera"
 import Link from "next/link"
 import MultiplayerClient from './multiplayerClient'
@@ -40,7 +40,11 @@ export default function SetUpPage(){
         rounds: 3,
         hints: 1
     })
+
     const changeSettings = (iteration, property) => {
+        if(!admin){
+            return
+        }
         var newSettings = {
             time: settings.time,
             rounds: settings.rounds,
@@ -53,6 +57,7 @@ export default function SetUpPage(){
         newSettings[property] += iteration
         setSettings(newSettings)
     }
+
     const getSettingWidgets = () => {
         var widgets = []
         let index = 0
@@ -86,16 +91,23 @@ export default function SetUpPage(){
         }, 1000);
     }
 
+    const [admin, setAdmin] = useState(false);
+
     const [playerName, setPlayerName] = useState('')
     const playerInputHandler = (e) => {
         setPlayerName(e.target.value)
-        
     }
 
     const [listOfPlayers, setListOfPlayers] = useState([])
     const updatePlayers = (players) => {
         setListOfPlayers(players)
     }
+
+    useEffect(()=>{
+        if(listOfPlayers.length === 1){
+            setAdmin(true);
+        }
+    }, [listOfPlayers])
     
     const showOnlinePlayers = (listOfPlayers) => {
         let list = [];
@@ -104,7 +116,6 @@ export default function SetUpPage(){
             list.push(
                 <div key={index} className="flex items-center pb-2">
                     <img className='w-10 h-10 ml-5' src={'/avatar' + player.avatar + '.png'} alt={player.avatar}></img>
-                    {/* <img className="w-10 h-10 rounded-full ml-5" src='/avatar' + avatar + '.png' alt={avatar} </img> */}
                     <div className='text-lg ml-4'>{player.name}</div>
                 </div>
             );
@@ -113,20 +124,25 @@ export default function SetUpPage(){
         return list;
     }
 
-
     const [roomKey, setRoomKey] = useState("");
     useEffect(()=>{
         const urlParams = new URLSearchParams(window.location.search);
         setRoomKey(urlParams.get("room"));
-
-
-
     },
     [])
 
+    const [gameStarted, setGameStarted] = useState(false);
+
+    const startGame = () => {
+        if(!admin){
+            return
+        }
+        setGameStarted(true);
+}
+
     return (
         <div className="relative">
-            <MultiplayerClient updatePlayers={updatePlayers} name={playerName} avatar={avatar}></MultiplayerClient>
+            <MultiplayerClient updatePlayers={updatePlayers}></MultiplayerClient>
             <button className='text-3xl font-bold absolute p-5' onClick={()=>{setPopup(true)}}>?</button>
             {popup && 
                 <div className="absolute w-full h-full bg-white z-50 flex justify-center items-center" onClick={()=>{setPopup(false)}}>
@@ -145,7 +161,7 @@ export default function SetUpPage(){
                     </div>
                     <div className='flex'>
                         <button className='w-48 text-center p-2 border-4 border-black rounded-lg mr-10' onClick={()=>copyURL()}>{buttonText}</button>
-                        <Link className='w-48 text-center p-2 border-4 border-black rounded-lg' href={'/game?room=' + roomKey}>Start Game</Link>
+                        <button className='w-48 text-center p-2 border-4 border-black rounded-lg' onClick={()=>startGame()}>Start Game</button>
                     </div>
                 </div>
                 <div className="flex flex-col h-full">

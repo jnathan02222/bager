@@ -40,11 +40,17 @@ export default function Game(){
     const [landmarkCoords, setLandmarkCoords] = useState({});
     const [clearCanvas, setClearCanvas] = useState(false);
 
+    const [listOfPlayers, setListOfPlayers] = useState([])
+    const updatePlayers = (players) => {
+        setListOfPlayers(players)
+    }
+
     return (
         <div className="w-full min-w-[1024px] min-h-screen max-h-screen flex justify-content  p-24">
-            <MultiplayerClient></MultiplayerClient>
+            <MultiplayerClient updatePlayers={updatePlayers} updateAdmin={setAdmin} name={playerName} avatar={avatar} 
+                admin={admin} time={settings.time} rounds={settings.rounds} hints={settings.hints} gameStarted={gameStarted}></MultiplayerClient>
             <div className="w-1/5 flex flex-col">
-                <Scoreboard players={[]}></Scoreboard>
+                <Scoreboard players={[listOfPlayers]}></Scoreboard>
                 <Camera startCamera={true} getCoords={getCoords}></Camera>
             </div> 
             <div className="p-10 pt-0 w-3/5 h-full flex flex-col items-center">

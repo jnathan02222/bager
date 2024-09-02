@@ -70,7 +70,7 @@ public class BackendApplication {
 		return proxyRequest();
 	}
 
-	//Captures everything execept /ws/**
+	//Captures everything except /ws/**
 	@GetMapping({"/", "/_next/**", "/*"})
     public ResponseEntity<byte[]> proxyRequest() {
         String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString().replace(hostUrl, proxyUrl);

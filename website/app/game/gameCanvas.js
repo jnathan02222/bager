@@ -20,7 +20,6 @@ export default function Canvas({coords, colors, clearCanvas}){
 
   const pointingThreshold = 1;
  
-
   const [lines, setLines] = useState([]);
   const isDrawing = useRef({
       "pointer" : false,

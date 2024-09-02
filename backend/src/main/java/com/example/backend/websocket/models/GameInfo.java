@@ -1,14 +1,15 @@
-
 package com.example.backend;
 import java.util.HashMap;
 
 public class GameInfo{
     private boolean gameStarted;
     private HashMap<String, Player> players;
+    private Settings settings;
 
     public GameInfo(){
         this.gameStarted = false;
         this.players = new HashMap<String, Player>();
+        this.settings = new Settings();
         //synchronized 
     }
 
@@ -16,16 +17,33 @@ public class GameInfo{
         return this.gameStarted;
     }
 
+    public synchronized void setGameStarted(boolean gameStarted){
+        this.gameStarted = gameStarted;
+    }
+
     public synchronized void updatePlayer(String sessionId, Player p){
         players.put(sessionId, p);
     }
 
+    public synchronized void setPlayers(HashMap<String, Player> players){
+        this.players = players;
+    }
+    
     public synchronized HashMap<String, Player> getPlayers(){
         return players;
     }
 
-    
-    
+    public synchronized Player getPlayerBySessionId(String sessionId){
+        return players.get(sessionId);
+    }
+
+    public synchronized void setSettings(Settings s){
+        this.settings = s;
+    }
+
+    public synchronized Settings getSettings(){
+        return settings;
+    }
 }
 
 /*
