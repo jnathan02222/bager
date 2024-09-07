@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.example.backend.websocket.MultiplayerService;
+import com.example.backend.websocket.models.GameInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Random;
 import org.springframework.http.HttpHeaders;
@@ -25,8 +29,23 @@ public class BackendApplication {
     RestTemplate restTemplate = new RestTemplate();	
 	String hostUrl = "http://localhost:8080";
 	String proxyUrl = "http://localhost:3000";
+	String[] words = { 
+		"pig", "bench", "boat", "helicopter", "nail", "lizard", "ear", "kitten", "roly poly", "truck", 
+		"ring", "hook", "seashell", "hat", "banana", "zebra", "rock", "duck", "crack", "dinosaur", 
+		"bee", "motorcycle", "girl", "stairs", "carrot", "ladybug", "turtle", "person", "fly", "desk", 
+		"parka", "pinecone", "rhinoceros", "rope", "chip", "celery", "brick", "coyote", "positive", 
+		"fork", "bowtie", "yarn", "narwhal", "juice", "screwdriver", "electricity", "puppet", "pumpkin", 
+		"soup", "thief", "mask", "earmuffs", "newborn", "manatee", "swarm", "mayor", "ski lift", "flavor", 
+		"elope", "rubber", "pain", "jeans", "houseboat", "hut", "cloak", "cattle", "sweater", "student", 
+		"hoop", "sickle", "password", "irrational", "income tax", "member", "dictate", "overture", 
+		"practice", "offstage", "soulmate"
+	};
+
+	String wordsString = String.join(",", words);
 
 	public String generateRandomString(int length) {
+		// Rest of the code
+	
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         Random random = new Random();
@@ -44,30 +63,27 @@ public class BackendApplication {
 		this.multiplayerService = multiplayerService;
 	}
 	
-	@GetMapping("/setup")
+	@GetMapping("/game")
 	public ResponseEntity<byte[]> setup(@RequestParam(required = false) String room){
 		if(room == null){
 			//Add room to url
 			String roomKey = generateRandomString(16);
 			multiplayerService.addRoom(roomKey, new GameInfo());
-			return redirect("/setup?room="+roomKey);
+			return redirect("/game?room="+roomKey);
 		}else if(!multiplayerService.roomExists(room)){
 			return redirect("/noRoom");
-		}else if(multiplayerService.getRoom(room).isGameStarted()){
-			return redirect("/game");
 		}
 		return proxyRequest();
 	}
 
-	@GetMapping("/game")
-	public ResponseEntity<byte[]> game(@RequestParam(required = false) String room){
-		if(room == null || !multiplayerService.roomExists(room)){
-			return redirect("/noRoom");
-		}else if(!multiplayerService.getRoom(room).isGameStarted()){
-			return redirect("/setup");
+	@GetMapping("/threeWords")
+	public String[] threeWords(){
+		Random random = new Random();
+		String[] guessingWords = new String[3];
+		for(int i=0; i<3; i++){
+			guessingWords[i] = words[random.nextInt(words.length)];
 		}
-		//Proceed
-		return proxyRequest();
+		return guessingWords;
 	}
 
 	//Captures everything execept /ws/**

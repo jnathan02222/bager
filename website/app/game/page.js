@@ -1,60 +1,44 @@
 "use client"
+import {useState, useEffect} from 'react';
+import Game from './game';
+import SetUpPage from './setup';
+import MultiplayerClient from './multiplayerClient';
+import axios from 'axios';
 
-import Guesses from "./guesses";
-import Scoreboard from "./scoreboard";
-import Camera from "../setup/camera";
-import Canvas from "./gameCanvas";
-import { useEffect, useState } from "react"
-import MultiplayerClient from "../setup/multiplayerClient";
+export default function SetupAndGamePage(){
+    const [gameStarted, setGameStarted] = useState(false);
+    const [gameState, setGameState] = useState(undefined);
+    const [isDrawing, setIsDrawing] = useState(false);
 
-export default function Game(){
-    //Timer
-    const [time, setTime] = useState(120);
-    useEffect(() => {
-        const timer = setInterval(()=> {
-            setTime(time - 1);
-        }, 1000);
-        if (time === 0) {
-            return clearInterval(timer);
-        }
-        return () => clearInterval(timer);
-    }, [time]);
-
-    //Copy Button
-    const [buttonText, setButtonText] = useState('Invite the Homies')
-    const copyURL = () => {
-        navigator.clipboard.writeText(window.location.href)
-        setButtonText('Copied!')
-        setTimeout(() => {
-            setButtonText('Copy to Clipboard')
-        }, 1000);
+    //Setup page
+    const [avatar, setAvatar] = useState(0);
+    const [playerName, setPlayerName] = useState('');
+    const [listOfPlayers, setListOfPlayers] = useState([])
+    const updatePlayers = (players) => {
+        setListOfPlayers(players)
     }
+    const defaultSettings = {time: 60, rounds: 3, hints: 1};
+    const [settings, setSettings] = useState(defaultSettings);
+    const [isAdmin, setIsAdmin] = useState(false);
 
-    //Coordinates
-    const getCoords = (coords, colors, clearCanvas) => {
-        setLandmarkCoords(coords);
-        setColors(colors);
-        setClearCanvas(clearCanvas);
-    }
-    const [colors, setColors] = useState({});
-    const [landmarkCoords, setLandmarkCoords] = useState({});
-    const [clearCanvas, setClearCanvas] = useState(false);
+    const [word, setWord] = useState("");
+    const [canvasData, setCanvasData] = useState(undefined);
+    
+    const [listOfGuesses, setListOfGuesses] = useState([]);
+    const [guess, setGuess] = useState('');
+
+    
 
     return (
-        <div className="w-full min-w-[1024px] min-h-screen max-h-screen flex justify-content  p-24">
-            <MultiplayerClient></MultiplayerClient>
-            <div className="w-1/5 flex flex-col">
-                <Scoreboard players={[]}></Scoreboard>
-                <Camera startCamera={true} getCoords={getCoords}></Camera>
-            </div> 
-            <div className="p-10 pt-0 w-3/5 h-full flex flex-col items-center">
-                <Canvas coords={landmarkCoords} colors={colors} clearCanvas={clearCanvas}></Canvas>
-                <div className='text-center'>{time}</div>
-            </div> 
-            <div className="w-1/5 h-full flex flex-col items-center">
-                <Guesses></Guesses>
-                <button className='w-48 text-center p-2 border-4 border-black rounded-lg mt-5' onClick={()=>copyURL()}>{buttonText}</button>
-            </div> 
+        <div>
+            <MultiplayerClient updatePlayers={updatePlayers} name={playerName} avatar={avatar} settings={settings} setSettings={setSettings} setIsAdmin={setIsAdmin} 
+                gameStarted={gameStarted} setGameStarted={setGameStarted} gameState={gameState} setGameState={setGameState} setIsDrawing={setIsDrawing} word={word} setWord={setWord} canvasData={canvasData} setCanvasData={setCanvasData} setListOfGuesses={setListOfGuesses} guess={guess}></MultiplayerClient>
+                
+            {gameStarted ? <Game gameState={gameState} setGameState={setGameState} listOfPlayers={listOfPlayers} settings={settings} isDrawing={isDrawing} word={word} 
+            setWord={setWord} canvasData={canvasData} setCanvasData={setCanvasData} listOfGuesses={listOfGuesses} setListOfGuesses={setListOfGuesses} guess={guess} setGuess={setGuess}
+            playerName={playerName}></Game> 
+                : <SetUpPage avatar={avatar} setAvatar={setAvatar} playerName={playerName} setPlayerName={setPlayerName} listOfPlayers={listOfPlayers} settings={settings} 
+                setSettings={setSettings} isAdmin={isAdmin} setGameStarted={setGameStarted} setGameState={setGameState}></SetUpPage>}
         </div>
-    );
+    )
 }

@@ -11,6 +11,7 @@
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.14",
     "@stomp/stompjs": "^7.0.0",
+    "axios": "^1.7.7",
     "canvas": "^2.11.2",
     "next": "14.2.5",
     "react": "^18",

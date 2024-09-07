@@ -1,5 +1,8 @@
-package com.example.backend;
+package com.example.backend.websocket;
 import org.springframework.stereotype.Service;
+
+import com.example.backend.websocket.models.GameInfo;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 

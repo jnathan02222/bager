@@ -38,3 +38,13 @@ https://spring.io/guides/gs/messaging-stomp-websocket
 https://spring.io/guides/gs/scheduling-tasks
 Services
 Proxy / Redirects
+https://docs.spring.io/spring-framework/reference/web/websocket/stomp/handle-send.html
+
+
+#Scores
+    #Schedule task to change game state
+    #Determine points and send information to users (player, points gained or final points)
+    #Schedule task to go to next round or setup page
+
+#Disconnnect (choose new admin) + heartbeat
+#Initial info + info update (should work with canvas?)

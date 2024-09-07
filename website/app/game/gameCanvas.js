@@ -2,6 +2,8 @@ import { Stage, Layer, Line, Circle } from 'react-konva';
 import { useState, useRef, useEffect } from "react";
 
 export default function Canvas({coords, colors, clearCanvas}){
+  const [lines, setLines] = useState([]);
+
   const canvasRef = useRef(null);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -21,7 +23,7 @@ export default function Canvas({coords, colors, clearCanvas}){
   const pointingThreshold = 1;
  
 
-  const [lines, setLines] = useState([]);
+  
   const isDrawing = useRef({
       "pointer" : false,
       "middle" : false,
@@ -35,6 +37,9 @@ export default function Canvas({coords, colors, clearCanvas}){
   useEffect(()=>{
     if("thumb" in coords){
       for(const finger in coords){
+        if(coords[finger] === null){
+          continue;
+        }
         if(finger != "thumb"){
           if(getDistance(coords["thumb"], coords[finger]) < pointingThreshold){
             handleMouseDown(finger, coords[finger]);
@@ -79,6 +84,7 @@ export default function Canvas({coords, colors, clearCanvas}){
     isDrawing.current[finger] = true;
     setLines(prev=>[...prev, { finger: finger, color : colors[finger], points: [point.x , point.y] }]);
   };
+  
   const handleMouseMove = (finger, point) => {
     // no drawing - skipping
     if (!isDrawing.current[finger]) {
@@ -117,14 +123,19 @@ export default function Canvas({coords, colors, clearCanvas}){
   function showFingers(){
     var circles = [];
     for(const finger in coords){
+      if(coords[finger] === null){
+        continue;
+      }
       if(finger != "thumb" && isDrawing.current[finger]){
         circles.push(<Circle key={finger} x={coords[finger].x * width} y={coords[finger].y * height} width={colors[finger] == "white" ? 40 : 20} height={colors[finger] == "white" ? 40 : 20} fill={colors[finger]} stroke="black"></Circle>);
       }
     }
-    return circles;
+    return circles;     
   }
 
-  
+  useEffect(()=>{
+    
+  }, [lines])
 
   return (
     <div ref={canvasRef}  className='w-full border-4 border-black m-10 stage-canvas rounded-md -scale-x-[1] z-10 overflow-hidden	'>

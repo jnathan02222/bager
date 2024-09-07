@@ -3,12 +3,10 @@ import { useState, useRef, useEffect } from "react"
 import Camera from "./camera"
 import Link from "next/link"
 import MultiplayerClient from './multiplayerClient'
-export default function SetUpPage(){
+export default function SetUpPage({avatar, setAvatar, playerName, setPlayerName, listOfPlayers, settings, setSettings, isAdmin, setGameStarted, setGameState }){
 
-    //Avatar
-    const [avatar, setAvatar] = useState(0);
     
-
+    
     const changeAvatar = (iteration, curAvatar) => {
         let newAvatar = curAvatar + iteration;
         if (newAvatar > 9) {
@@ -35,11 +33,7 @@ export default function SetUpPage(){
         rounds: 1,
         hints: 1,
     }
-    const [settings, setSettings] = useState({
-        time: 60,
-        rounds: 3,
-        hints: 1
-    })
+    
     const changeSettings = (iteration, property) => {
         var newSettings = {
             time: settings.time,
@@ -61,10 +55,10 @@ export default function SetUpPage(){
                 <div key={index}>
                     <div className="flex justify-center mt-5 items-center">
                         <h1 className='text-lg self-center w-40'>{names[property]}</h1>
-                        <div className="flex justify-between w-40">
-                            <img className="w-5 h-5 mt-1 hover:cursor-pointer" src='/left.png' onClick={(e)=>{changeSettings(-iterations[property], property)}}></img>
+                        <div className={"flex w-40 " + (isAdmin ? "justify-between" : "justify-center")}>
+                            {isAdmin && <img className="w-5 h-5 mt-1 hover:cursor-pointer" src='/left.png' onClick={(e)=>{changeSettings(-iterations[property], property)}}></img>}
                             <h1 className='text-lg self-center text-center'>{settings[property]}</h1>
-                            <img className="w-5 h-5 mt-1 hover:cursor-pointer" src='/right.png' onClick={(e)=>{changeSettings(iterations[property], property)}}></img>
+                            {isAdmin && <img className="w-5 h-5 mt-1 hover:cursor-pointer" src='/right.png' onClick={(e)=>{changeSettings(iterations[property], property)}}></img>}
                         </div>
                     </div>
                 </div>
@@ -82,21 +76,17 @@ export default function SetUpPage(){
         navigator.clipboard.writeText(window.location.href)
         setButtonText('Copied!')
         setTimeout(() => {
-            setButtonText('Copy to Clipboard')
+            setButtonText('Copy invite link')
         }, 1000);
     }
 
-    const [playerName, setPlayerName] = useState('')
+    
     const playerInputHandler = (e) => {
         setPlayerName(e.target.value)
         
     }
 
-    const [listOfPlayers, setListOfPlayers] = useState([])
-    const updatePlayers = (players) => {
-        setListOfPlayers(players)
-    }
-    
+   
     const showOnlinePlayers = (listOfPlayers) => {
         let list = [];
         let index = 0;
@@ -126,7 +116,6 @@ export default function SetUpPage(){
 
     return (
         <div className="relative">
-            <MultiplayerClient updatePlayers={updatePlayers} name={playerName} avatar={avatar}></MultiplayerClient>
             <button className='text-3xl font-bold absolute p-5' onClick={()=>{setPopup(true)}}>?</button>
             {popup && 
                 <div className="absolute w-full h-full bg-white z-50 flex justify-center items-center" onClick={()=>{setPopup(false)}}>
@@ -144,8 +133,8 @@ export default function SetUpPage(){
                         <img className="hover:cursor-pointer w-16 h-16 m-10" src='/right.png' onClick={(e)=>changeAvatar(1, avatar)}></img>
                     </div>
                     <div className='flex'>
-                        <button className='w-48 text-center p-2 border-4 border-black rounded-lg mr-10' onClick={()=>copyURL()}>{buttonText}</button>
-                        <Link className='w-48 text-center p-2 border-4 border-black rounded-lg' href={'/game?room=' + roomKey}>Start Game</Link>
+                        <button className='w-48 text-center p-2 border-4 border-black rounded-lg ' onClick={()=>copyURL()}>{buttonText}</button>
+                        {isAdmin && <button className='w-48 text-center p-2 border-4 ml-10 border-black rounded-lg' onClick={()=>{setGameStarted(true); setGameState(0)}}>Start Game</button>}
                     </div>
                 </div>
                 <div className="flex flex-col h-full">

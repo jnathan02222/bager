@@ -1,4 +1,4 @@
-package com.example.backend;
+package com.example.backend.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -18,6 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     config.enableSimpleBroker("/ws/topic");
     //Incoming messages starting with /ws/multiplayer will be sent to the Controller
     config.setApplicationDestinationPrefixes("/ws/multiplayer");
+    
   }
 
   @Override
