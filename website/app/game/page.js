@@ -27,16 +27,17 @@ export default function SetupAndGamePage(){
     const [listOfGuesses, setListOfGuesses] = useState([]);
     const [guess, setGuess] = useState('');
 
-    
+    const [tally, setTally] = useState([]);
 
     return (
         <div>
             <MultiplayerClient updatePlayers={updatePlayers} name={playerName} avatar={avatar} settings={settings} setSettings={setSettings} setIsAdmin={setIsAdmin} 
-                gameStarted={gameStarted} setGameStarted={setGameStarted} gameState={gameState} setGameState={setGameState} setIsDrawing={setIsDrawing} word={word} setWord={setWord} canvasData={canvasData} setCanvasData={setCanvasData} setListOfGuesses={setListOfGuesses} guess={guess}></MultiplayerClient>
+                gameStarted={gameStarted} setGameStarted={setGameStarted} gameState={gameState} setGameState={setGameState} setIsDrawing={setIsDrawing} word={word} setWord={setWord} 
+                canvasData={canvasData} setCanvasData={setCanvasData} setListOfGuesses={setListOfGuesses} guess={guess} setTally={setTally}></MultiplayerClient>
                 
-            {gameStarted ? <Game gameState={gameState} setGameState={setGameState} listOfPlayers={listOfPlayers} settings={settings} isDrawing={isDrawing} word={word} 
+            {gameStarted ? <Game gameState={gameState} setGameState={setGameState} listOfPlayers={listOfPlayers} settings={settings} isDrawing={isDrawing} setIsDrawing={setIsDrawing} word={word} 
             setWord={setWord} canvasData={canvasData} setCanvasData={setCanvasData} listOfGuesses={listOfGuesses} setListOfGuesses={setListOfGuesses} guess={guess} setGuess={setGuess}
-            playerName={playerName}></Game> 
+            playerName={playerName} setTally={setTally} tally={tally}></Game> 
                 : <SetUpPage avatar={avatar} setAvatar={setAvatar} playerName={playerName} setPlayerName={setPlayerName} listOfPlayers={listOfPlayers} settings={settings} 
                 setSettings={setSettings} isAdmin={isAdmin} setGameStarted={setGameStarted} setGameState={setGameState}></SetUpPage>}
         </div>

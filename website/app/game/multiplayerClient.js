@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react"
 import { Client } from '@stomp/stompjs';
 
-export default function MultiplayerClient({updatePlayers, name, avatar, points, settings, setSettings, setIsAdmin, gameStarted, setGameStarted, gameState, setGameState, setIsDrawing, word, canvasData, setCanvasData, setListOfGuesses, guess}){
+export default function MultiplayerClient({updatePlayers, name, avatar, points, settings, setSettings, setIsAdmin, gameStarted, setGameStarted, gameState, setGameState, setIsDrawing, word, canvasData, setCanvasData, setListOfGuesses, guess, setTally }){
 
     const stompClient = useRef(undefined);
     const connected = useRef(false);
@@ -88,10 +88,10 @@ export default function MultiplayerClient({updatePlayers, name, avatar, points, 
 
             stompClient.current.subscribe('/ws/topic/gameState/'+room.current, (msg) => {
                 let body = JSON.parse(msg.body);
-                if(body !==  prevGameState.current){
-                    setGameState(body);
+                if(body.gameState !==  prevGameState.current){
+                    setGameState(body.gameState);
                 }
-                prevGameState.current = body;
+                prevGameState.current = body.gameState;
             });
 
             stompClient.current.subscribe('/ws/topic/canvas/'+room.current, (msg) => {
@@ -105,6 +105,13 @@ export default function MultiplayerClient({updatePlayers, name, avatar, points, 
                 let body = JSON.parse(msg.body);
                 setListOfGuesses(prev=>[...prev, body]);
             });
+
+            stompClient.current.subscribe('/ws/topic/tally/'+room.current, (msg) => {
+                let body = JSON.parse(msg.body);
+                console.log(body);
+                setTally(body);
+            });
+
 
             
             connected.current = true;

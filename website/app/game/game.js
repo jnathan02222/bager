@@ -6,7 +6,7 @@ import Camera from "./camera";
 import Canvas from "./gameCanvas";
 import { useEffect, useState, useRef } from "react"
 
-export default function Game({gameState, isDrawing, listOfPlayers, settings, setGameState, word, setWord, canvasData, setCanvasData, listOfGuesses, setListOfGuesses, guess, setGuess, playerName }){
+export default function Game({gameState, isDrawing, setIsDrawing, listOfPlayers, settings, setGameState, word, setWord, canvasData, setCanvasData, listOfGuesses, setListOfGuesses, guess, setGuess, playerName, setTally, tally }){
 
     const CHOOSE_WORD = 0;
     const DRAW_AND_GUESS = 1;
@@ -39,12 +39,18 @@ export default function Game({gameState, isDrawing, listOfPlayers, settings, set
     useEffect(() => {
         if(gameState === DRAW_AND_GUESS && prevGameState.current !== DRAW_AND_GUESS){
             setTime(settings.time);
+            setTally([]);
             const timer = setInterval(()=>{
                 setTime(prev=>{
                     return (prev === 0 ? 0 : prev - 1);
                 })
             }, 1000);
             return ()=>{clearInterval(timer)};
+        }
+        if(gameState === TALLY_SCORE){
+            setIsDrawing(false);
+            setClearCanvas(prev=>!prev);
+            setWord("");    
         }
         prevGameState.current = gameState;
     }, [gameState]);
@@ -102,13 +108,28 @@ export default function Game({gameState, isDrawing, listOfPlayers, settings, set
         return list;
     }
 
+    function getTally(){
+        var list = [];
+        var index = 0;
+        for(const item of tally){
+            list.push(<div key={index} className="flex gap-0.5">
+                <div>{item.player.name}</div>
+                <div className="text-green-400">{"+" + item.points}</div>
+            </div>);
+            index += 1;
+        }
+        return list;
+    }
+
     return (
         <div className="w-full min-w-[1024px] min-h-screen max-h-screen flex justify-content p-24">
+            
             <div className="w-1/5 flex flex-col">
                 <Scoreboard players={listOfPlayers}></Scoreboard>
                 <Camera startCamera={true} getCoords={getCoords}></Camera>
             </div> 
             <div className="p-10 pt-0 w-3/5 h-full flex flex-col items-center">
+            
                 <div className="absolute">{word}</div>
                 <Canvas coords={landmarkCoords} colors={colors} clearCanvas={clearCanvas}></Canvas>
                 <div className='text-center'>{time}</div>
@@ -118,9 +139,9 @@ export default function Game({gameState, isDrawing, listOfPlayers, settings, set
                 <button className='w-48 text-center p-2 border-4 border-black rounded-lg mt-5' onClick={()=>copyURL()}>{buttonText}</button>
             </div> 
 
-            {gameState === CHOOSE_WORD && <div className="w-full min-h-screen bg-black opacity-50 fixed z-10 top-0 left-0 flex justify-center items-center">{isDrawing ? <div><div className="text-white text-center">Select a word.</div><div className="flex">{getWords()}</div></div> : <div className="text-white">Waiting for player to select a word.</div>}</div>}
+            {gameState === CHOOSE_WORD && <div className="w-full min-h-screen bg-black opacity-75 fixed z-10 top-0 left-0 flex justify-center items-center">{isDrawing ? <div><div className="text-white text-center">Select a word.</div><div className="flex">{getWords()}</div></div> : <div className="text-white">Waiting for player to select a word.</div>}</div>}
             
-            {gameState === TALLY_SCORE && <div className="w-full min-h-screen bg-black opacity-50 fixed z-10 top-0 left-0"></div>}
+            {gameState === TALLY_SCORE && <div className="w-full min-h-screen bg-black opacity-75 fixed z-10 top-0 left-0 flex justify-center items-center"><div className="text-white">{getTally()}</div></div>}
         </div>
     );
 }

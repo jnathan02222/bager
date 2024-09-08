@@ -7,7 +7,7 @@ export default function Scoreboard({players}) {
                 <div key={index} className="flex items-center pb-5 max-w-[300px] ">
                     <img className='w-14 h-14' src={'/avatar' + player.avatar + '.png'} alt={player.avatar}></img>
                     <div className='text-lg ml-5 truncate'>{player.name}</div>
-                    <div className='text-lg ml-auto'>{player.score}</div>
+                    <div className='text-lg ml-auto'>{player.points}</div>
                 </div>
             );
             index += 1;

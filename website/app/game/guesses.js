@@ -5,8 +5,11 @@ export default function Guesses({playerName, listOfGuesses, setListOfGuesses, gu
     const [text, setText] = useState("");
     const name = useRef('');
 
+    const messagesRef = useRef(undefined);
     
-
+    useEffect(()=>{
+        messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    }, [listOfGuesses]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -21,7 +24,7 @@ export default function Guesses({playerName, listOfGuesses, setListOfGuesses, gu
 
     return (
         <div className='w-full aspect-[9/16] border-black  mt-10 border-4 rounded-md flex flex-col justify-between overflow-y-hidden'>
-            <ul className='overflow-auto p-2'>
+            <ul ref={messagesRef} className='overflow-auto p-2'>
                 {listOfGuesses.map((guess, index) => <li key={index}>
                     <div className="flex gap-0.5">
                         <div className="text-gray-400">{guess.name + ":"}</div>

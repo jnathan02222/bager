@@ -59,7 +59,7 @@ export default function Canvas({coords, colors, clearCanvas}){
       "ring" : false,
       "pinky" : false
     }
-  }, [clearCanvas])
+  }, [clearCanvas]);
 
   const prevColors = useRef(colors);
   useEffect(()=>{

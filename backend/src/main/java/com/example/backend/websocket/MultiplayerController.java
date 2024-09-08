@@ -18,7 +18,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import java.util.HashMap;
-import java.util.ArrayList;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
@@ -69,17 +68,9 @@ public class MultiplayerController {
 
     @MessageMapping("/gameState/{id}")
     @SendTo("/ws/topic/gameState/{id}")
-    public int gameState(GameState g, @DestinationVariable String id){
+    public GameState gameState(GameState g, @DestinationVariable String id){
         GameInfo room = multiplayerService.getRoom(id);
-
-        if(g.getGameState() == GameState.CHOOSE_WORD && room.getGameState() != GameState.CHOOSE_WORD){
-            messagingTemplate.convertAndSend("/ws/topic/currentPlayer/"+id, room.popSelectedPlayer());
-        }
-        if(g.getGameState() == GameState.DRAW_AND_GUESS && room.getGameState() != GameState.DRAW_AND_GUESS){
-            room.setRoundStartTime();
-        }
-
-        room.setGameState(g.getGameState());
+        room.updateGameState(g, id, multiplayerService, messagingTemplate);
         return room.getGameState();
     }
 

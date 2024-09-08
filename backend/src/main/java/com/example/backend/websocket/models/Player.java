@@ -3,7 +3,7 @@ package com.example.backend.websocket.models;
 public class Player{
     private String name;
     private int avatar;
-    private int points;
+    private int points = 0;
     private String id;
     private boolean isAdmin;
 
@@ -37,6 +37,10 @@ public class Player{
     }
     public synchronized void setPoints(int points) {
       this.points = points;
+    }
+
+    public synchronized void addPoints(long points){
+      this.points += points;
     }
 
     public synchronized String getId() {
