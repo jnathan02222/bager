@@ -41,11 +41,7 @@ Proxy / Redirects
 https://docs.spring.io/spring-framework/reference/web/websocket/stomp/handle-send.html
 
 
-#Scores
-    #Schedule task to change game state
-    #Determine points and send information to users (player, points gained or final points)
-    #Schedule task to go to next round or setup page
-    #Skip the rest of timer
 
+#Skip the rest of timer
 #Disconnnect (choose new admin) + heartbeat
 #Initial info + info update (should work with canvas and timer?) make sure joining works

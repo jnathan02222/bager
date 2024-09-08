@@ -62,7 +62,11 @@ public class GameInfo{
 
     public synchronized void updateGameState(GameState g, String id, MultiplayerService multiplayerService, SimpMessagingTemplate messagingTemplate){
         if(g.getGameState() == GameState.CHOOSE_WORD && gameState.getGameState() != GameState.CHOOSE_WORD){
-            messagingTemplate.convertAndSend("/ws/topic/currentPlayer/"+id, popSelectedPlayer(messagingTemplate, id));
+
+            
+
+
+            messagingTemplate.convertAndSend("/ws/topic/currentPlayer/"+id, popSelectedPlayer());
         }
         if(g.getGameState() == GameState.DRAW_AND_GUESS && gameState.getGameState()  != GameState.DRAW_AND_GUESS){
             startRound();
@@ -90,6 +94,19 @@ public class GameInfo{
                 messagingTemplate.convertAndSend("/ws/topic/gameState/"+id, new GameState(GameState.CHOOSE_WORD));
                 updateGameState(new GameState(GameState.CHOOSE_WORD), id, multiplayerService, messagingTemplate);
                 turns += 1;
+
+                if(rounds == settings.getRounds()-1 && selectedPlayer >= playerQueue.size()){
+                    gameStarted = false;
+                    gameState = new GameState(GameState.NONE);
+                    
+                    messagingTemplate.convertAndSend("/ws/topic/info/"+id, this);
+                    for(String sessionId : players.keySet()){
+                        players.get(sessionId).setPoints(0);
+                    }
+                    messagingTemplate.convertAndSend("/ws/topic/players/"+id, players);
+                    return;
+                }
+
             }, 5);
         }
         setGameState(g);
@@ -140,18 +157,14 @@ public class GameInfo{
         this.canvasData = canvasData;
     }
 
-    public synchronized Player popSelectedPlayer(SimpMessagingTemplate messagingTemplate, String id){
+    public synchronized Player popSelectedPlayer(){
         if(playerQueue.size() == 0){
             return null;
         }
         if(selectedPlayer >= playerQueue.size()){
             selectedPlayer = 0;
             rounds += 1;
-            if(rounds == settings.getRounds()){
-                gameStarted = false;
-                gameState = new GameState(GameState.NONE);
-                messagingTemplate.convertAndSend("/ws/topic/info/"+id, this);
-            }
+            
         }
         Player p = playerQueue.get(selectedPlayer);
         selectedPlayer += 1;
