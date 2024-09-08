@@ -27,7 +27,7 @@ public class BackendApplication {
 	}
 
     RestTemplate restTemplate = new RestTemplate();	
-	String hostUrl = "http://floppyfingers.online";
+	String hostUrl = "https://floppyfingers.online";
 	String proxyUrl = "http://localhost:3000";
 	String[] words = { 
 		"pig", "bench", "boat", "helicopter", "nail", "lizard", "ear", "kitten", "roly poly", "truck", 
@@ -63,13 +63,18 @@ public class BackendApplication {
 		this.multiplayerService = multiplayerService;
 	}
 	
+
+	@GetMapping("/createRoom")
+	public ResponseEntity<byte[]> createRoom(){
+		String roomKey = generateRandomString(16);
+		multiplayerService.addRoom(roomKey, new GameInfo());
+		return redirect("/game?room="+roomKey);
+	}
+
 	@GetMapping("/game")
 	public ResponseEntity<byte[]> setup(@RequestParam(required = false) String room){
 		if(room == null){
-			//Add room to url
-			String roomKey = generateRandomString(16);
-			multiplayerService.addRoom(roomKey, new GameInfo());
-			return redirect("/game?room="+roomKey);
+			return redirect("/noRoom");
 		}else if(!multiplayerService.roomExists(room)){
 			return redirect("/noRoom");
 		}else if(multiplayerService.getRoom(room).getGameStarted()){
