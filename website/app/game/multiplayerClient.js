@@ -29,7 +29,7 @@ export default function MultiplayerClient({updatePlayers, name, avatar, points, 
         room.current =  urlParams.get("room");
 
         stompClient.current = new Client({
-            brokerURL: 'ws://localhost:8080/ws/connect',
+            brokerURL: 'ws://34.46.254.80/ws/connect',
         });
         
         stompClient.current.onConnect = (frame) => {

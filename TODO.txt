@@ -42,6 +42,5 @@ https://docs.spring.io/spring-framework/reference/web/websocket/stomp/handle-sen
 
 
 
-#Skip the rest of timer
-#Disconnnect (choose new admin) + heartbeat
-#Initial info + info update (should work with canvas and timer?) make sure joining works
+#heartbeat + info update (should work with canvas and timer?)
+#Hosting

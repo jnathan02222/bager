@@ -35,5 +35,9 @@ public class MultiplayerService {
     public void scheduleTask(Runnable task, int delay) {
         scheduler.schedule(task, delay, TimeUnit.SECONDS);
     }
+
+    public Map<String, GameInfo> getRooms(){
+        return rooms;
+    }
     
 }

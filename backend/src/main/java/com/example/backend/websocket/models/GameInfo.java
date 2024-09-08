@@ -14,17 +14,19 @@ public class GameInfo{
     
 
     private boolean gameStarted;
+
     private HashMap<String, Player> players;
     private ArrayList<Player> playerQueue;
+    private HashMap<String, Long> guesses;
     private int selectedPlayer = 0;
+    private GameState gameState;
+
     private String currentWord;
-    
     private Settings settings;
     private boolean noPlayers = true;
-    private GameState gameState;
+
     private CanvasData canvasData;
     private ArrayList<Message> chat;
-    private HashMap<String, Long> guesses;
     private Long turnStartTime;
     private int rounds;
     private int turns;
@@ -45,13 +47,20 @@ public class GameInfo{
     public synchronized boolean getGameStarted(){
         return this.gameStarted;
     }
-    public synchronized void setGameStarted(boolean gameStarted){
+    public synchronized void updateGameStarted(boolean gameStarted, MultiplayerService multiplayerService, SimpMessagingTemplate messagingTemplate, String id){
         if(!this.gameStarted && gameStarted){
             Collections.shuffle(playerQueue);
             rounds = 0;
             turns = 0;
             selectedPlayer = 0;
+            updateGameState(new GameState(GameState.CHOOSE_WORD), id, multiplayerService, messagingTemplate);
+            messagingTemplate.convertAndSend("/ws/topic/gameState/"+id, gameState);
         }
+
+        setGameStarted(gameStarted);
+    }
+    public synchronized void setGameStarted(boolean gameStarted){
+        
         this.gameStarted = gameStarted;
 
     }
@@ -78,10 +87,9 @@ public class GameInfo{
         messagingTemplate.convertAndSend("/ws/topic/players/"+id, getPlayers());
         
     }
-
+    
     public synchronized void updateGameState(GameState g, String id, MultiplayerService multiplayerService, SimpMessagingTemplate messagingTemplate){
-        if(g.getGameState() == GameState.CHOOSE_WORD && gameState.getGameState() != GameState.CHOOSE_WORD){
-
+        if((g.getGameState() == GameState.CHOOSE_WORD && gameState.getGameState() != GameState.CHOOSE_WORD)){
             messagingTemplate.convertAndSend("/ws/topic/currentPlayer/"+id, popSelectedPlayer());
         }
         if(g.getGameState() == GameState.DRAW_AND_GUESS && gameState.getGameState()  != GameState.DRAW_AND_GUESS){
@@ -96,10 +104,13 @@ public class GameInfo{
 
         if(g.getGameState() == GameState.TALLY_SCORE && gameState.getGameState()  != GameState.TALLY_SCORE){
             turns += 1;
+           
             multiplayerService.scheduleTask(()->{
+                
+
                 messagingTemplate.convertAndSend("/ws/topic/gameState/"+id, new GameState(GameState.CHOOSE_WORD));
                 updateGameState(new GameState(GameState.CHOOSE_WORD), id, multiplayerService, messagingTemplate);
-
+                
                 if(rounds == settings.getRounds()-1 && selectedPlayer >= playerQueue.size()){
                     gameStarted = false;
                     gameState = new GameState(GameState.NONE);
@@ -210,6 +221,30 @@ public class GameInfo{
         turnStartTime = Instant.now().getEpochSecond();
         this.guesses = new HashMap<String, Long>();
         
+    }
+
+    public synchronized void removePlayer(String sessionId, MultiplayerService multiplayerService, SimpMessagingTemplate messagingTemplate, String roomId){
+        Player p = players.get(sessionId);
+
+       
+        if(playerQueue.indexOf(p) == selectedPlayer - 1 && gameStarted){
+            
+            selectedPlayer -= 1;
+            updateGameState(new GameState(GameState.TALLY_SCORE), roomId, multiplayerService, messagingTemplate);
+        }
+
+        playerQueue.remove(p);
+        players.remove(sessionId);
+
+        if(guesses.containsKey(sessionId)){
+            guesses.remove(sessionId);
+        }
+
+        //Select new admin
+        for(Player pl : players.values()){
+            pl.setIsAdmin(true);
+            break;
+        }
     }
 }
 

@@ -21,6 +21,10 @@ import java.util.HashMap;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
 
 // reads updates in the /players endpoint and sends it to the /ws/topic/players endpoint
 @Controller
@@ -28,12 +32,35 @@ public class MultiplayerController {
     private MultiplayerService multiplayerService;
     private SimpMessagingTemplate messagingTemplate;
 
-
+    
 	@Autowired
 	public MultiplayerController(MultiplayerService multiplayerService, SimpMessagingTemplate messagingTemplate){
 		this.multiplayerService = multiplayerService;
         this.messagingTemplate = messagingTemplate;
 	}
+    
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = headerAccessor.getSessionId();
+        for(String id : multiplayerService.getRooms().keySet()){
+            GameInfo room = multiplayerService.getRoom(id);
+
+            if(room.getPlayers().containsKey(sessionId)){
+                //Delete room
+                if(room.getPlayers().size() == 1){
+                    multiplayerService.closeRoom(id);
+                    return;
+                }
+
+                //Remove player, adjust admin and advance the turn if necessary
+                room.removePlayer(sessionId, multiplayerService, messagingTemplate, id);
+                messagingTemplate.convertAndSend("/ws/topic/players/"+id, room.getPlayers());
+                messagingTemplate.convertAndSend("/ws/topic/gameState/"+id, room.getGameState());
+
+            }
+        }
+    }
 
     @MessageMapping("/info/{id}")
     @SendTo("/ws/topic/info/{id}")
@@ -62,7 +89,7 @@ public class MultiplayerController {
     @SendTo("/ws/topic/gameMode/{id}")
     public boolean gameMode(GameStarted g, @DestinationVariable String id){
         GameInfo room = multiplayerService.getRoom(id);
-        room.setGameStarted(g.getGameStarted());
+        room.updateGameStarted(g.getGameStarted(), multiplayerService, messagingTemplate, id);
         return room.getGameStarted();
     }
 

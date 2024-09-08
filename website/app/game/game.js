@@ -37,9 +37,12 @@ export default function Game({gameState, isDrawing, setIsDrawing, listOfPlayers,
     [isDrawing]);
 
     useEffect(() => {
+        if(gameState === CHOOSE_WORD && prevGameState.current !== CHOOSE_WORD){
+            setTally([]);
+        }
         if(gameState === DRAW_AND_GUESS && prevGameState.current !== DRAW_AND_GUESS){
             setTime(settings.time);
-            setTally([]);
+            
             const timer = setInterval(()=>{
                 setTime(prev=>{
                     return (prev === 0 ? 0 : prev - 1);

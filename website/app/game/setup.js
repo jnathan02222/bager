@@ -134,7 +134,7 @@ export default function SetUpPage({avatar, setAvatar, playerName, setPlayerName,
                     </div>
                     <div className='flex'>
                         <button className='w-48 text-center p-2 border-4 border-black rounded-lg ' onClick={()=>copyURL()}>{buttonText}</button>
-                        {isAdmin && <button className='w-48 text-center p-2 border-4 ml-10 border-black rounded-lg' onClick={()=>{setGameStarted(true); setGameState(0)}}>Start Game</button>}
+                        {isAdmin && <button className='w-48 text-center p-2 border-4 ml-10 border-black rounded-lg' onClick={()=>{setGameStarted(true)}}>Start Game</button>}
                     </div>
                 </div>
                 <div className="flex flex-col h-full">

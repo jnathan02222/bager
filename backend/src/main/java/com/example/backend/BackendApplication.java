@@ -27,7 +27,7 @@ public class BackendApplication {
 	}
 
     RestTemplate restTemplate = new RestTemplate();	
-	String hostUrl = "http://localhost:8080";
+	String hostUrl = "http://34.46.254.80";
 	String proxyUrl = "http://localhost:3000";
 	String[] words = { 
 		"pig", "bench", "boat", "helicopter", "nail", "lizard", "ear", "kitten", "roly poly", "truck", 
@@ -72,6 +72,8 @@ public class BackendApplication {
 			return redirect("/game?room="+roomKey);
 		}else if(!multiplayerService.roomExists(room)){
 			return redirect("/noRoom");
+		}else if(multiplayerService.getRoom(room).getGameStarted()){
+			return redirect("/inProgress");
 		}
 		return proxyRequest();
 	}
