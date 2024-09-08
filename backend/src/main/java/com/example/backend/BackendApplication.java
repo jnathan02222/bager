@@ -27,7 +27,7 @@ public class BackendApplication {
 	}
 
     RestTemplate restTemplate = new RestTemplate();	
-	String hostUrl = "http://34.71.164.237";
+	String hostUrl = "http://floppyfingers.online";
 	String proxyUrl = "http://localhost:3000";
 	String[] words = { 
 		"pig", "bench", "boat", "helicopter", "nail", "lizard", "ear", "kitten", "roly poly", "truck", 
