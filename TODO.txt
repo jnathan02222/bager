@@ -43,6 +43,5 @@ https://docs.spring.io/spring-framework/reference/web/websocket/stomp/handle-sen
 
 
 #heartbeat + info update (should work with canvas and timer?)
-#Hosting
-    #SSL
-    #Caching problem
+#Disconnect logic
+#Caching problem
