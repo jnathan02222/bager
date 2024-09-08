@@ -60,40 +60,45 @@ public class GameInfo{
         return turns;
     }
 
+    public synchronized void updateScore(String id, MultiplayerService multiplayerService, SimpMessagingTemplate messagingTemplate){
+        messagingTemplate.convertAndSend("/ws/topic/gameState/"+id, new GameState(GameState.TALLY_SCORE));
+        updateGameState(new GameState(GameState.TALLY_SCORE), id, multiplayerService, messagingTemplate);
+        
+        ArrayList<Score> points = new ArrayList<Score>();
+        for(String sessionId : players.keySet()){
+            long gain = 0;
+            if(guesses.containsKey(sessionId)){
+                gain = settings.getTime()-(guesses.get(sessionId)-turnStartTime);
+            }
+            points.add(new Score(players.get(sessionId), gain));
+
+            players.get(sessionId).addPoints(gain);
+        }
+        messagingTemplate.convertAndSend("/ws/topic/tally/"+id, points);
+        messagingTemplate.convertAndSend("/ws/topic/players/"+id, getPlayers());
+        
+    }
+
     public synchronized void updateGameState(GameState g, String id, MultiplayerService multiplayerService, SimpMessagingTemplate messagingTemplate){
         if(g.getGameState() == GameState.CHOOSE_WORD && gameState.getGameState() != GameState.CHOOSE_WORD){
-
-            
-
 
             messagingTemplate.convertAndSend("/ws/topic/currentPlayer/"+id, popSelectedPlayer());
         }
         if(g.getGameState() == GameState.DRAW_AND_GUESS && gameState.getGameState()  != GameState.DRAW_AND_GUESS){
             startRound();
+            int currentTurns = turns;
             multiplayerService.scheduleTask(()->{
-                messagingTemplate.convertAndSend("/ws/topic/gameState/"+id, new GameState(GameState.TALLY_SCORE));
-                updateGameState(new GameState(GameState.TALLY_SCORE), id, multiplayerService, messagingTemplate);
-
-                ArrayList<Score> points = new ArrayList<Score>();
-                for(String sessionId : players.keySet()){
-                    long gain = 0;
-                    if(guesses.containsKey(sessionId)){
-                        gain = settings.getTime()-(guesses.get(sessionId)-turnStartTime);
-                    }
-                    points.add(new Score(players.get(sessionId), gain));
-
-                    players.get(sessionId).addPoints(gain);
+                if(currentTurns == getTurns()){
+                    updateScore(id, multiplayerService, messagingTemplate);
                 }
-                messagingTemplate.convertAndSend("/ws/topic/tally/"+id, points);
-                messagingTemplate.convertAndSend("/ws/topic/players/"+id, getPlayers());
             }, settings.getTime());
         }
 
         if(g.getGameState() == GameState.TALLY_SCORE && gameState.getGameState()  != GameState.TALLY_SCORE){
+            turns += 1;
             multiplayerService.scheduleTask(()->{
                 messagingTemplate.convertAndSend("/ws/topic/gameState/"+id, new GameState(GameState.CHOOSE_WORD));
                 updateGameState(new GameState(GameState.CHOOSE_WORD), id, multiplayerService, messagingTemplate);
-                turns += 1;
 
                 if(rounds == settings.getRounds()-1 && selectedPlayer >= playerQueue.size()){
                     gameStarted = false;
@@ -182,7 +187,7 @@ public class GameInfo{
     public ArrayList<Message> getChat(){
         return chat;
     }*/
-    public synchronized Message checkGuess(Message msg, String sessionId, SimpMessagingTemplate messagingTemplate, String roomId){
+    public synchronized Message checkGuess(Message msg, String sessionId, SimpMessagingTemplate messagingTemplate, String roomId, MultiplayerService multiplayerService){
         chat.add(msg);
         
         if(msg.getMessage().equals(currentWord) && !guesses.containsKey(sessionId)){
@@ -191,6 +196,10 @@ public class GameInfo{
             Message success = new Message();
             success.setName("Server");
             success.setMessage(msg.getName() + " guessed the word!");
+
+            if(guesses.size() == players.size()-1){
+                updateScore(roomId, multiplayerService, messagingTemplate);
+            }
             
             return success;
         }
@@ -200,6 +209,7 @@ public class GameInfo{
     public synchronized void startRound(){
         turnStartTime = Instant.now().getEpochSecond();
         this.guesses = new HashMap<String, Long>();
+        
     }
 }
 

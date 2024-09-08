@@ -135,7 +135,7 @@ export default function Game({gameState, isDrawing, setIsDrawing, listOfPlayers,
                 <div className='text-center'>{time}</div>
             </div> 
             <div className="w-1/5 h-full flex flex-col items-center">
-                <Guesses playerName={playerName} listOfGuesses={listOfGuesses} setListOfGuesses={setListOfGuesses} guess={guess} setGuess={setGuess}></Guesses>
+                <Guesses playerName={playerName} listOfGuesses={listOfGuesses} setListOfGuesses={setListOfGuesses} guess={guess} setGuess={setGuess} gameState={gameState}></Guesses>
                 <button className='w-48 text-center p-2 border-4 border-black rounded-lg mt-5' onClick={()=>copyURL()}>{buttonText}</button>
             </div> 
 

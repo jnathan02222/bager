@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 
-export default function Guesses({playerName, listOfGuesses, setListOfGuesses, guess, setGuess}){
+export default function Guesses({playerName, listOfGuesses, setListOfGuesses, guess, setGuess, gameState}){
 
     const [text, setText] = useState("");
     const name = useRef('');
@@ -17,8 +17,10 @@ export default function Guesses({playerName, listOfGuesses, setListOfGuesses, gu
             return;
         }
 
-
-        setGuess({name : playerName === "" ? "Player" : playerName, message : text});
+        if(gameState === 1){
+            setGuess({name : playerName === "" ? "Player" : playerName, message : text});
+        }
+            
         setText("");
     }
 

@@ -93,7 +93,7 @@ public class MultiplayerController {
     @SendTo("/ws/topic/chat/{id}")
     public Message chat(Message m, @DestinationVariable String id, SimpMessageHeaderAccessor headerAccessor){
         GameInfo room = multiplayerService.getRoom(id);
-        return room.checkGuess(m, headerAccessor.getSessionId(), messagingTemplate, id);
+        return room.checkGuess(m, headerAccessor.getSessionId(), messagingTemplate, id, multiplayerService);
     }
 
 }
