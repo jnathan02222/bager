@@ -228,6 +228,8 @@ public class GameInfo{
 
        
         if(playerQueue.indexOf(p) == selectedPlayer - 1 && gameStarted){
+            
+            selectedPlayer -= 1;
             updateGameState(new GameState(GameState.TALLY_SCORE), roomId, multiplayerService, messagingTemplate);
         }
 
