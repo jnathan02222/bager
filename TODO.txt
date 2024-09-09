@@ -45,3 +45,14 @@ https://docs.spring.io/spring-framework/reference/web/websocket/stomp/handle-sen
 #heartbeat + info update (should work with canvas and timer?)
 #Disconnect logic
 #Caching problem
+
+
+#Fixing disconnecting during GAME
+#Limit name length
+#Limit guess length
+#Clear canvas between
+#Waiting for <current player> to select a word
+#Icon to show current user
+#Show word after guess
+#Hints
+#Sound effects
