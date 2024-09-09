@@ -27,7 +27,10 @@ public class BackendApplication {
 	}
 
     RestTemplate restTemplate = new RestTemplate();	
-	String hostUrl = "https://floppyfingers.online";
+	String secureHostUrl = "https://floppyfingers.online";
+	String hostUrl = "http://floppyfingers.online";
+
+
 	String proxyUrl = "http://localhost:3000";
 	String[] words = { 
 		"pig", "bench", "boat", "helicopter", "nail", "lizard", "ear", "kitten", "roly poly", "truck", 
@@ -97,6 +100,7 @@ public class BackendApplication {
 	@GetMapping({"/", "/_next/**", "/*"})
     public ResponseEntity<byte[]> proxyRequest() {
         String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString().replace(hostUrl, proxyUrl);
+		path.replace(secureHostUrl, proxyUrl);
 		ResponseEntity<byte[]> response = restTemplate.getForEntity(path, byte[].class);
 		return ResponseEntity.status(response.getStatusCode())
 				.headers(response.getHeaders())
