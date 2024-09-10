@@ -24,8 +24,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     //This is how a STOMP connection will be established
-    registry.addEndpoint("/ws/connect");
-    registry.setAllowedOrigins("https://floppyfingers.online/");
+    registry.addEndpoint("/ws/connect")
+                .setAllowedOrigins("https://floppyfingers.online/")
+                .withSockJS();
   }
 
 }
