@@ -3,6 +3,7 @@ A drawing game using the Google Handlandmarker and Gesture Recognition API. Impl
 
 # Dependencies
 Node.js version v20.17.0
+
 JDK-17
 
 # Installation
