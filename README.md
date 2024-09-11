@@ -23,3 +23,5 @@ In the /backend folder, run the backend server
 ./gradlew.bat bootRun #Omit .bat on Linux systems
 ```
 You will have to modify BackendApplication.java and multiplayerClient.js to use your domain (replace instances of floppyfingers.online).
+
+Access the game by going to the backend server in your browser (it acts as a proxy to the frontend).
