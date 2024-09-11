@@ -27,8 +27,8 @@ public class BackendApplication {
 	}
 
     RestTemplate restTemplate = new RestTemplate();	
-	String secureHostUrl = "https://floppyfingers.online";
-	String hostUrl = "http://floppyfingers.online";
+	String secureHostUrl = "https://localhost:8080";
+	String hostUrl = "http://localhost:8080";
 
 
 	String proxyUrl = "http://localhost:3000";

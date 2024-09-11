@@ -29,7 +29,7 @@ export default function MultiplayerClient({updatePlayers, name, avatar, points, 
         room.current =  urlParams.get("room");
 
         stompClient.current = new Client({
-            brokerURL: 'wss://floppyfingers.online/ws/connect',
+            brokerURL: 'wss://localhost:8080/ws/connect',
         });
         
         stompClient.current.onConnect = (frame) => {
