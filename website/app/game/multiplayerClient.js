@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react"
 import { Client } from '@stomp/stompjs';
 
-export default function MultiplayerClient({updatePlayers, name, avatar, points, settings, setSettings, setIsAdmin, gameStarted, setGameStarted, gameState, setGameState, setIsDrawing, word, canvasData, setCanvasData, setListOfGuesses, guess, setTally }){
+export default function MultiplayerClient({updatePlayers, name, avatar, points, settings, setSettings, setIsAdmin, gameStarted, setGameStarted, gameState, setGameState, setIsDrawing, word, canvasData, setCanvasData, setListOfGuesses, guess, setTally, setPing }){
 
     const stompClient = useRef(undefined);
     const connected = useRef(false);
@@ -22,6 +22,7 @@ export default function MultiplayerClient({updatePlayers, name, avatar, points, 
     const isAdmin = useRef(false);
     const isDrawing = useRef(false);
     const prevGameState = useRef(undefined);
+    const pingTime = useRef(0);
     
 
     useEffect(()=>{
@@ -30,6 +31,7 @@ export default function MultiplayerClient({updatePlayers, name, avatar, points, 
 
         stompClient.current = new Client({
             brokerURL: 'wss://floppyfingers.online/ws/connect',
+            //brokerURL: 'ws://localhost:8080/ws/connect',
         });
         
         stompClient.current.onConnect = (frame) => {
@@ -53,6 +55,7 @@ export default function MultiplayerClient({updatePlayers, name, avatar, points, 
                 setGameStarted(body.gameStarted);
                 setGameState(body.gameState);
                 setPlayers(body.players);
+                
             });
             
             // acknowledges change in endpoint and makes changes to frontend
@@ -108,11 +111,15 @@ export default function MultiplayerClient({updatePlayers, name, avatar, points, 
 
             stompClient.current.subscribe('/ws/topic/tally/'+room.current, (msg) => {
                 let body = JSON.parse(msg.body);
-                console.log(body);
                 setTally(body);
             });
 
-
+            stompClient.current.subscribe('/ws/topic/ping/'+room.current, (msg) => {
+                let body = JSON.parse(msg.body);
+                if(body.id == id.current){
+                    setPing(Date.now() - pingTime.current);
+                }
+            });
             
             connected.current = true;
 
@@ -211,6 +218,21 @@ export default function MultiplayerClient({updatePlayers, name, avatar, points, 
                 destination: '/ws/multiplayer/chat/'+room.current,
                 body: JSON.stringify(guess)
             })
+        }
+
+    }, [guess])
+
+    useEffect(()=>{
+        const ping = setInterval(() => {
+            if(connected.current){
+                pingTime.current = Date.now();
+                stompClient.current.publish({
+                    destination: '/ws/multiplayer/ping/'+room.current,
+                })
+            }
+        }, 3000)
+        return () => {
+            clearInterval(ping);
         }
 
     }, [guess])

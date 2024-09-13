@@ -29,7 +29,7 @@ public class BackendApplication {
     RestTemplate restTemplate = new RestTemplate();	
 	String secureHostUrl = "https://floppyfingers.online";
 	String hostUrl = "http://floppyfingers.online";
-
+	//String hostUrl = "http://localhost:8080";
 
 	String proxyUrl = "http://localhost:3000";
 	String[] words = { 
@@ -102,9 +102,13 @@ public class BackendApplication {
         String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString().replace(hostUrl, proxyUrl);
 		path.replace(secureHostUrl, proxyUrl);
 		ResponseEntity<byte[]> response = restTemplate.getForEntity(path, byte[].class);
+
+		HttpHeaders headers = response.getHeaders();
+		//headers.setCacheControl("no-store, no-cache, must-revalidate, max-age=0");
 		return ResponseEntity.status(response.getStatusCode())
-				.headers(response.getHeaders())
+				.headers(headers)
 				.body(response.getBody());
+				
 	}
 
 	public ResponseEntity<byte[]> redirect(String target){

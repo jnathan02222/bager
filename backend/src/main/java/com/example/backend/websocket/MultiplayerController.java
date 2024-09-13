@@ -123,5 +123,10 @@ public class MultiplayerController {
         return room.checkGuess(m, headerAccessor.getSessionId(), messagingTemplate, id, multiplayerService);
     }
 
+    @MessageMapping("/ping/{id}")
+    @SendTo("/ws/topic/ping/{id}")
+    public Player ping(@DestinationVariable String id, SimpMessageHeaderAccessor headerAccessor){
+        return multiplayerService.getRoom(id).getPlayers().get(headerAccessor.getSessionId());
+    }
 }
 
