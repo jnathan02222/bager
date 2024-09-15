@@ -1,6 +1,7 @@
 # Floppy Fingers
 A drawing game using the Google Handlandmarker and Gesture Recognition API. Implemented using Next.js and Spring Boot.
 
+Currently hosted at [floppyfingers.online](floppyfingers.online)
 # Dependencies
 Node.js version v20.17.0
 
