@@ -5,8 +5,6 @@ import Link from "next/link"
 import MultiplayerClient from './multiplayerClient'
 export default function SetUpPage({avatar, setAvatar, playerName, setPlayerName, listOfPlayers, settings, setSettings, isAdmin, setGameStarted, setGameState }){
 
-    
-    
     const changeAvatar = (iteration, curAvatar) => {
         let newAvatar = curAvatar + iteration;
         if (newAvatar > 9) {
@@ -82,11 +80,11 @@ export default function SetUpPage({avatar, setAvatar, playerName, setPlayerName,
 
     
     const playerInputHandler = (e) => {
-        setPlayerName(e.target.value)
-        
+        if(playerName.length < 15){
+            setPlayerName(e.target.value)            
+        }
     }
 
-   
     const showOnlinePlayers = (listOfPlayers) => {
         let list = [];
         let index = 0;
@@ -108,9 +106,6 @@ export default function SetUpPage({avatar, setAvatar, playerName, setPlayerName,
     useEffect(()=>{
         const urlParams = new URLSearchParams(window.location.search);
         setRoomKey(urlParams.get("room"));
-
-
-
     },
     [])
 
@@ -125,8 +120,7 @@ export default function SetUpPage({avatar, setAvatar, playerName, setPlayerName,
             <div className='w-full min-h-screen flex justify-center p-24'>
                 <div className='flex flex-col items-center'>
                     <Camera></Camera>
-                    <input className='w-48  border-b-2 border-gray-500 focus:outline-none mt-4 mb-2' placeholder={"Player"} value={playerName}  onChange={playerInputHandler}></input>
-
+                    <input className='w-48  border-b-2 border-gray-500 focus:outline-none mt-4 mb-2' placeholder={"Player"} value={playerName} onChange={playerInputHandler}></input>
                     <div className='w-full rounded-3xl flex justify-center items-center'>
                         <img className="hover:cursor-pointer w-16 h-16 m-10" src='/left.png' onClick={(e)=>changeAvatar(-1, avatar)}></img>
                         <img className='' src={'/avatar' + avatar + '.png'} alt={avatar}></img>

@@ -88,7 +88,6 @@ export default function Game({gameState, isDrawing, setIsDrawing, listOfPlayers,
     useEffect(()=>{
         if(!allowDrawing.current && canvasData !== undefined && canvasData){
             
-
             setLandmarkCoords(canvasData.coords);
             setColors(canvasData.colors);
             setClearCanvas(canvasData.clearCanvas);

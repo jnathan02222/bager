@@ -48,9 +48,9 @@ https://docs.spring.io/spring-framework/reference/web/websocket/stomp/handle-sen
 
 
 #Fixing disconnecting during GAME
-#Limit name length
-#Limit guess length
-#Clear canvas between
+#Limit name length DONE
+#Limit guess length DONE
+#Clear canvas between 
 #Waiting for <current player> to select a word
 #Icon to show current user
 #Show word after guess

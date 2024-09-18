@@ -24,6 +24,12 @@ export default function Guesses({playerName, listOfGuesses, setListOfGuesses, gu
         setText("");
     }
 
+    const enterGuess = (e) => {
+        if(text.length < 15){
+            setText(e.target.value);
+        }
+    }
+
     return (
         <div className='w-full aspect-[9/16] border-black  mt-10 border-4 rounded-md flex flex-col justify-between overflow-y-hidden'>
             <ul ref={messagesRef} className='overflow-auto p-2'>
@@ -35,7 +41,7 @@ export default function Guesses({playerName, listOfGuesses, setListOfGuesses, gu
                 </li>)}
             </ul>
             <form onSubmit={handleSubmit}>
-                <input className='w-full border-gray-100 border-t-4 h-10 p-2 focus:outline-none' placeholder='Make a guess!' value={text} onChange={(e)=>{setText(e.target.value)}}></input>
+                <input className='w-full border-gray-100 border-t-4 h-10 p-2 focus:outline-none' placeholder='Make a guess!' value={text} onChange={enterGuess}></input>
             </form>
         </div>
     );
